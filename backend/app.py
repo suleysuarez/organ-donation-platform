@@ -65,5 +65,8 @@ class User(UserMixin, db.Model):
 with app.app_context():
     db.create_all()
 
+from auth import auth_bp
+app.register_blueprint(auth_bp)
+
 if __name__ == '__main__':
     app.run(debug=True)
