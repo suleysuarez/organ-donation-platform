@@ -7,7 +7,14 @@ falso en tests para no levantar un navegador real.
 from __future__ import annotations
 
 import asyncio
+import sys
 from contextlib import asynccontextmanager
+
+# Windows: Playwright lanza el navegador como subproceso y eso requiere el
+# ProactorEventLoop. uvicorn puede arrancar con SelectorEventLoop (que en Windows
+# no soporta subprocesos → NotImplementedError). Forzamos la política Proactor.
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
 
 from fastapi import FastAPI
 
