@@ -3,7 +3,7 @@ package com.organdonation.authservice;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", schema = "auth")
 public class User {
 
     @Id
