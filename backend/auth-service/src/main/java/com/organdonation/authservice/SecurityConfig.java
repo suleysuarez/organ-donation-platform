@@ -13,7 +13,9 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/h2-console/**", "/api/auth/**").permitAll()
+                        // TODO: /api/medicos/** queda público temporalmente; restringir
+                        // cuando se implemente autenticación (login + JWT).
+                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/medicos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
