@@ -69,9 +69,13 @@ python -m venv .venv && source .venv/Scripts/activate   # Windows Git Bash
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env
-uvicorn app.main:app --reload --workers 1
-# Swagger: http://localhost:8000/docs
+python run.py            # Swagger: http://localhost:8000/docs
 ```
+
+> ⚠️ **Windows:** usa `python run.py` (NO `uvicorn ... --reload`). El modo `--reload` crea el
+> event loop en un subproceso y rompe el lanzamiento del navegador de Playwright
+> (`NotImplementedError`). `run.py` fija el `ProactorEventLoop` antes de arrancar y corre sin reload.
+> En Linux/macOS también puedes usar `uvicorn app.main:app --workers 1`.
 
 Para depurar el scraping viendo el navegador: `PLAYWRIGHT_HEADLESS=false` en `.env`.
 
