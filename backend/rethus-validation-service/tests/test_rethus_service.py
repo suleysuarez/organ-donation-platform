@@ -7,6 +7,26 @@ from app.schemas.medico import EstadoValidacion
 # vía el alert JS de validación en rethus_scraper.enviar_consulta.
 
 
+def test_no_encontrado_texto_real():
+    # Texto exacto del portal RETHUS para un documento no inscrito.
+    txt = (
+        "El Ciudadano de la identificación consultada,No se encuentra inscrito en el"
+        "Registro Único Nacional del Talento Humano en Salud (ReTHUS)."
+    )
+    estado, datos = interpretar_resultado(txt)
+    assert estado == EstadoValidacion.NO_ENCONTRADO
+    assert datos is None
+
+
+def test_autorizado_texto_real_inscrito():
+    # Caso positivo esperado: el mensaje afirmativo contiene "se encuentra inscrito".
+    txt = "El Ciudadano de la identificación consultada, se encuentra inscrito en el ReTHUS."
+    estado, datos = interpretar_resultado(txt)
+    assert estado == EstadoValidacion.AUTORIZADO
+    assert datos is not None
+    assert datos.autorizado_para_ejercer is True
+
+
 def test_no_encontrado():
     html = "<div>No se encontró información para el documento consultado.</div>"
     estado, datos = interpretar_resultado(html)

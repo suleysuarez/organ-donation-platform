@@ -93,12 +93,16 @@ Los tests **no** abren navegador: usan un servicio mockeado (endpoints) y prueba
 - ✅ **Selectores confirmados** contra el DOM (ids `ctl00$cntContenido$...`) en `SELECTORS`.
 - ✅ **Captcha:** se obtiene como imagen (`#imgCaptcha`) y el **captcha incorrecto** se detecta vía el
   alert JS de validación ("Verifique el Número de Confirmación") → `CAPTCHA_INCORRECTO`. Probado en vivo.
+- ✅ **NO_ENCONTRADO calibrado y probado en vivo** (captcha real + documento inexistente). El resultado
+  se lee de `#ctl00_cntContenido_LblResultado`; texto real: *"…No se encuentra inscrito en el Registro
+  Único Nacional del Talento Humano en Salud (ReTHUS)."*
 
 ### ⚠️ Pendiente / caveats
-- **Calibrar AUTORIZADO / NO_ENCONTRADO.** El texto exacto de la zona de resultados (tras un captcha
-  válido) no se pudo observar automáticamente (el captcha lo resuelve un humano). El parser
-  `interpretar_resultado` usa keywords razonables; **confírmalas en QA** resolviendo un captcha real con
-  un documento existente y otro inexistente, y ajusta `_KW_AUTORIZADO` / `_KW_NO_ENCONTRADO`.
+- **Confirmar AUTORIZADO con un caso real.** Falta validar con un médico **existente** (requiere un
+  captcha resuelto por humano + un documento real). La keyword positiva (`"se encuentra inscrito"`) es la
+  inferencia natural del mensaje negativo, pero **el texto exacto y los datos del médico** (de los paneles
+  `#ctl00_cntContenido_uPnlResultadoBasico` / `_uPnlResultadoDetallado`) deben confirmarse y mapearse a
+  `DatosMedico` (nombre, profesión, etc.). Hoy AUTORIZADO marca solo `autorizado_para_ejercer=True`.
 - **Concurrencia.** El `session_store` es en memoria → ejecutar con **un solo worker**. Para escalar:
   store externo (Redis) o sesiones serializadas.
 - **Fragilidad/ToS.** Es scraping de un portal gubernamental: puede romperse si cambian el HTML. Uso

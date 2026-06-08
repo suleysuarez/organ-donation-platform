@@ -35,27 +35,31 @@ SELECTORS: dict[str, str] = {
     "captcha_img": "#imgCaptcha",
     "captcha_input": "#ctl00_cntContenido_txtCatpchaConfirmation",
     "submit": "#ctl00_cntContenido_btnVerificarIdentificacion",
-    # Panel de contenido (acota el parseo para evitar el texto estático del encabezado).
-    "content": "#ctl00_cntContenido",
 }
 
-# El captcha incorrecto se notifica con un alert JS de validación (no hay postback).
-_DIALOG_CAPTCHA = ("confirmaci", "confirmaci", "imagen", "número de confirm", "numero de confirm")
+# Ids de la zona de resultados (confirmados contra el portal).
+_ID_LBL_RESULTADO = "ctl00_cntContenido_LblResultado"
+_IDS_DETALLE = (
+    "ctl00_cntContenido_uPnlResultadoBasico",
+    "ctl00_cntContenido_uPnlResultadoDetallado",
+)
 
-# Palabras clave específicas de la ZONA DE RESULTADOS (no del encabezado estático).
+# El captcha incorrecto se notifica con un alert JS de validación (no hay postback).
+_DIALOG_CAPTCHA = ("confirmaci", "imagen", "número de confirm", "numero de confirm")
+
+# Palabras clave calibradas con el texto REAL del portal.
+# OJO: NO_ENCONTRADO se chequea primero porque "no se encuentra inscrito" contiene
+# "se encuentra inscrito" (el positivo).
 _KW_NO_ENCONTRADO = (
+    "no se encuentra inscrito",
     "no se encontr",
     "no se hallaron",
-    "no existe registro",
     "no aparece",
-    "ningún resultado",
-    "no registra informaci",
 )
 _KW_AUTORIZADO = (
+    "se encuentra inscrito",
     "autorizado para ejercer",
-    "se encuentra registrad",
     "habilitado para ejercer",
-    "registro vigente",
 )
 
 
@@ -130,8 +134,15 @@ async def enviar_consulta(
         page.on("dialog", _on_dialog)
         try:
             await page.click(SELECTORS["submit"])
+            # Si el captcha es válido, el postback llena #...LblResultado con el mensaje.
+            # Esperamos a que tenga texto (sin colgarnos en un locator inexistente).
             try:
-                await page.wait_for_load_state("networkidle", timeout=10000)
+                await page.wait_for_function(
+                    "(id) => { const e = document.getElementById(id);"
+                    " return e && e.innerText.trim().length > 0; }",
+                    arg=_ID_LBL_RESULTADO,
+                    timeout=15000,
+                )
             except PlaywrightTimeoutError:
                 pass
         finally:
@@ -143,7 +154,12 @@ async def enviar_consulta(
                 return EstadoValidacion.CAPTCHA_INCORRECTO, None
             raise PortalError(f"Validación del portal: {dialogos[0]}")
 
-        contenido = await page.inner_text(SELECTORS["content"])
+        # Leemos el label de resultado + paneles de detalle (evaluate retorna ya, no cuelga).
+        contenido = await page.evaluate(
+            "(ids) => ids.map(i => { const e = document.getElementById(i);"
+            " return e ? e.innerText : ''; }).join('\\n')",
+            [_ID_LBL_RESULTADO, *_IDS_DETALLE],
+        )
     except PortalError:
         raise
     except Exception as exc:  # noqa: BLE001
