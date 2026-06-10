@@ -5,9 +5,6 @@ import jakarta.validation.constraints.*;
 
 public class RegisterRequestDTO {
 
-    @NotBlank(message = "El nombre es obligatorio")
-    private String nombre;
-
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Formato de correo invalido")
     private String email;
@@ -62,8 +59,6 @@ public class RegisterRequestDTO {
 
     private String donorStatus;
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }
