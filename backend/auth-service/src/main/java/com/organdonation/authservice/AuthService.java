@@ -37,15 +37,13 @@ public class AuthService {
 
 
         if (dto.getGender() != null) {
-            user.setGender(Gender.valueOf(dto.getGender().toUpperCase()));
+            user.setGender(Gender.fromString(dto.getGender()));
         }
         if (dto.getBloodType() != null) {
-
-            String bt = dto.getBloodType().replace("+", "_POSITIVE").replace("-", "_NEGATIVE");
-            user.setBloodType(BloodType.valueOf(bt));
+            user.setBloodType(BloodType.fromString(dto.getBloodType()));
         }
         if (dto.getDonorStatus() != null && !dto.getDonorStatus().isEmpty()) {
-            user.setDonorStatus(DonorStatus.valueOf(dto.getDonorStatus().toUpperCase()));
+            user.setDonorStatus(DonorStatus.fromString(dto.getDonorStatus()));
         }
         userRepository.save(user);
     }

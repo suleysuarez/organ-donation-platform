@@ -19,4 +19,20 @@ public enum BloodType {
     public String getValue() {
         return value;
     }
+    public static BloodType fromString(String text) {
+        if (text == null) return null;
+        // Buscar por nombre (ej: "O_POSITIVE", "A_NEGATIVE")
+        for (BloodType bt : BloodType.values()) {
+            if (bt.name().equalsIgnoreCase(text)) {
+                return bt;
+            }
+        }
+        // Buscar por valor con símbolo (ej: "O+", "A-")
+        for (BloodType bt : BloodType.values()) {
+            if (bt.getValue().equalsIgnoreCase(text)) {
+                return bt;
+            }
+        }
+        throw new IllegalArgumentException("Tipo de sangre inválido: " + text);
+    }
 }

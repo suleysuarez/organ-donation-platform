@@ -15,4 +15,13 @@ public enum DonorStatus {
     public String getValue() {
         return value;
     }
+    public static DonorStatus fromString(String text) {
+        if (text == null) return null;
+        for (DonorStatus ds : DonorStatus.values()) {
+            if (ds.name().equalsIgnoreCase(text) || ds.getValue().equalsIgnoreCase(text)) {
+                return ds;
+            }
+        }
+        throw new IllegalArgumentException("Estado de donante inválido: " + text);
+    }
 }
