@@ -3,6 +3,7 @@ package com.organdonation.authservice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -22,5 +23,18 @@ public class MedicoController {
                 .map(UserDto::new)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/medicos/{id}")
+    public ResponseEntity<?> obtenerMedicoPorId(@PathVariable Long id) {
+        Optional<User> optionalMedico = userRepository.findById(id);
+        if (optionalMedico.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        User medico = optionalMedico.get();
+        if (!"MEDICO".equals(medico.getRole())) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(new UserDto(medico));
     }
 }
