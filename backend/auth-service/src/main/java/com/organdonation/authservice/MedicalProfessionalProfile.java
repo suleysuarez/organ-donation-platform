@@ -11,6 +11,24 @@ import java.time.Instant;
 @Table(name = "medical_professional_profiles", schema = "auth")
 public class MedicalProfessionalProfile {
 
+    protected MedicalProfessionalProfile() {}
+
+    public MedicalProfessionalProfile(
+            User user,
+            String fullName,
+            String documentType,
+            String documentNumber,
+            String rethusRegistrationNumber,
+            String professionalProfile) {
+        this.user = user;
+        this.fullName = fullName;
+        this.documentType = documentType;
+        this.documentNumber = documentNumber;
+        this.rethusRegistrationNumber = rethusRegistrationNumber;
+        this.professionalProfile = professionalProfile;
+        this.verificationStatus = "PENDIENTE";
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

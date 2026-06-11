@@ -5,6 +5,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/api/medicos")
@@ -29,5 +31,11 @@ public class MedicoController {
     @GetMapping("/{id}")
     public MedicoResponseDTO obtener(@PathVariable Long id) {
         return medicoService.obtener(id);
+    }
+    @PostMapping
+    public ResponseEntity<MedicoResponseDTO> crear(
+            @Valid @RequestBody MedicoRequestDTO request) {
+        MedicoResponseDTO response = medicoService.crear(request);
+        return ResponseEntity.status(201).body(response);
     }
 }
