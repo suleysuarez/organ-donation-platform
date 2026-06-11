@@ -53,7 +53,16 @@ public class MedicoService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("No se encontró un médico con id " + id));
     }
-
+    /**
+     * Registra un nuevo profesional de salud en el sistema.
+     *
+     * <p>Crea primero la cuenta {@link User} con rol MEDICO y luego
+     * el {@link MedicalProfessionalProfile} asociado.
+     *
+     * @param dto datos de entrada del médico a registrar
+     * @return perfil creado como {@link MedicoResponseDTO}
+     * @throws RuntimeException si el correo ya está registrado
+     */
     public MedicoResponseDTO crear(MedicoRequestDTO dto) {
         if (userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("El correo ya está registrado");
