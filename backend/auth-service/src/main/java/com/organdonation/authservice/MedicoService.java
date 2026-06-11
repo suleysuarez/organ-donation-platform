@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
  * </ul>
  *
  * @author Ceamerap
- * @task PDDO-27
+ * @task PDDO-27, PDDO-49
  */
 @Service
 public class MedicoService {
