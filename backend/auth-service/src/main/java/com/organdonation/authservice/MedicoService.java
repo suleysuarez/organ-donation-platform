@@ -4,6 +4,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+/**
+ * Capa de servicio para la gestión de perfiles de profesionales de salud (médicos).
+ *
+ * <p>Contiene la lógica de negocio para listar, consultar y crear registros de
+ * {@link MedicalProfessionalProfile}, incluyendo la creación de la cuenta
+ * {@link User} asociada.
+ *
+ * <p>Responsabilidades:
+ * <ul>
+ *   <li>Validar que el correo no esté registrado antes de crear un médico</li>
+ *   <li>Persistir un nuevo {@link User} con rol MEDICO</li>
+ *   <li>Persistir el {@link MedicalProfessionalProfile} asociado al usuario</li>
+ *   <li>Retornar listados paginados con filtro opcional por nombre o documento</li>
+ * </ul>
+ *
+ * @author Ceamerap
+ * @task PDDO-27
+ */
 @Service
 public class MedicoService {
 
