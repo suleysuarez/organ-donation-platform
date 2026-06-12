@@ -49,4 +49,11 @@ public class MedicoController {
         MedicoResponseDTO response = medicoService.crear(request);
         return ResponseEntity.status(201).body(response);
     }
+    /** Valida un médico contra RETHUS y actualiza su estado de verificación. */
+    @PostMapping("/{id}/validar-rethus")
+    public RethusValidationResultDTO validarRethus(
+            @PathVariable Long id,
+            @RequestBody ValidarMedicoRequestDTO request) {
+        return medicoService.validarConRethus(id, request);
+    }
 }
