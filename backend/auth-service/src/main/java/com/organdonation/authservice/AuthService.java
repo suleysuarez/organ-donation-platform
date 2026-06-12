@@ -23,6 +23,10 @@ public class AuthService {
         user.setEmail(dto.getEmail());
         user.setPasswordHash(dto.getPassword());
         user.setRole(dto.getRole());
+        user.setSpecialty(dto.getSpecialty());
+        if (dto.getValidationStatus() != null && !dto.getValidationStatus().isEmpty()) {
+            user.setValidationStatus(ValidationStatus.fromString(dto.getValidationStatus()));
+        }
 
         user.setUsername(dto.getUsername());
         user.setFirstName(dto.getFirstName());
