@@ -72,6 +72,31 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Migraciones de base de datos (Flyway).
+		     Spring Boot 4 modulariza las autoconfiguraciones: la de Flyway vive en
+		     spring-boot-flyway (sin él, Flyway no se ejecuta al arrancar).
+		     flyway-database-postgresql es requerido por Flyway 10+/11 para Postgres. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-flyway</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+		</dependency>
+
+		<!-- Documentación OpenAPI + Swagger UI (estilo /docs de FastAPI).
+		     v3.x es la línea compatible con Spring Boot 4 / Spring Framework 7. -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>3.0.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
