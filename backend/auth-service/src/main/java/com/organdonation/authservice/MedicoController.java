@@ -1,40 +1,52 @@
 package com.organdonation.authservice;
 
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+/**
+ * Controlador REST para la gestión de profesionales de salud (médicos).
+ *
+ * <p>Expone los endpoints bajo {@code /api/medicos} para listar,
+ * consultar y registrar médicos en la plataforma.
+ *
+ * @author Ceamerap
+ * @task PDDO-28
+ */
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/medicos")
 public class MedicoController {
 
-    private final UserRepository userRepository;
+    private final MedicoService medicoService;
 
-    public MedicoController(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public MedicoController(MedicoService medicoService) {
+        this.medicoService = medicoService;
     }
 
-    @GetMapping("/medicos")
-    public ResponseEntity<List<UserDto>> listarMedicos() {
-        List<User> medicos = userRepository.findByRole("MEDICO");
-        List<UserDto> response = medicos.stream()
-                .map(UserDto::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
+    /** Listado paginado de médicos. Filtro opcional {@code q} por nombre o documento. */
+    @GetMapping
+    public Page<MedicoResponseDTO> listar(
+            @RequestParam(value = "q", required = false) String q,
+            @PageableDefault(size = 20, sort = "fullName", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+        return medicoService.listar(q, pageable);
     }
 
-    @GetMapping("/medicos/{id}")
-    public ResponseEntity<?> obtenerMedicoPorId(@PathVariable Long id) {
-        Optional<User> optionalMedico = userRepository.findById(id);
-        if (optionalMedico.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        User medico = optionalMedico.get();
-        if (!"MEDICO".equals(medico.getRole())) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(new UserDto(medico));
+    /** Detalle de un médico por id de perfil. */
+    @GetMapping("/{id}")
+    public MedicoResponseDTO obtener(@PathVariable Long id) {
+        return medicoService.obtener(id);
+    }
+
+    /** Registro de un nuevo médico. */
+    @PostMapping
+    public ResponseEntity<MedicoResponseDTO> crear(
+            @Valid @RequestBody MedicoRequestDTO request) {
+        MedicoResponseDTO response = medicoService.crear(request);
+        return ResponseEntity.status(201).body(response);
     }
 }
