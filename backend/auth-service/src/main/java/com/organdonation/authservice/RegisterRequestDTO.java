@@ -59,6 +59,11 @@ public class RegisterRequestDTO {
 
     private String donorStatus;
 
+    @Size(max = 100, message = "La especialidad no puede exceder 100 caracteres")
+    private String specialty;
+
+    private String validationStatus;
+
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
     public String getPassword() { return password; }
@@ -105,4 +110,10 @@ public class RegisterRequestDTO {
 
     public String getDonorStatus() { return donorStatus; }
     public void setDonorStatus(String donorStatus) { this.donorStatus = donorStatus; }
+    public String getSpecialty() { return specialty; }
+    public void setSpecialty(String specialty) { this.specialty = specialty; }
+
+    public String getValidationStatus() { return validationStatus; }
+    public void setValidationStatus(String validationStatus) { this.validationStatus = validationStatus; }
+
 }

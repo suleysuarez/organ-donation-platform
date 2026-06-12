@@ -14,6 +14,8 @@ public class UserDto {
     private String bloodType;
     private String phone;
     private String role;
+    private String city;
+    private String specialty;
 
     public UserDto(User user) {
         this.id = user.getId();
@@ -26,6 +28,8 @@ public class UserDto {
         this.gender = user.getGender() != null ? user.getGender().getValue() : null;
         this.bloodType = user.getBloodType() != null ? user.getBloodType().getValue() : null;
         this.phone = user.getPhone();
+        this.city = user.getCity();
+        this.specialty = user.getSpecialty();
         this.role = user.getRole();
     }
 
@@ -41,4 +45,6 @@ public class UserDto {
     public String getBloodType() { return bloodType; }
     public String getPhone() { return phone; }
     public String getRole() { return role; }
+    public String getCity() { return city; }
+    public String getSpecialty() { return specialty; }
 }

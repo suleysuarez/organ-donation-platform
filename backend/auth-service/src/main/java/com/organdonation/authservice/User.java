@@ -65,6 +65,12 @@ public class User {
     @Enumerated(EnumType.STRING)
     private DonorStatus donorStatus;
 
+    @Column(length = 100)
+    private String specialty;
+
+    @Enumerated(EnumType.STRING)
+    private ValidationStatus validationStatus;
+
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
@@ -119,4 +125,9 @@ public class User {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public String getSpecialty() { return specialty; }
+    public void setSpecialty(String specialty) { this.specialty = specialty; }
+
+    public ValidationStatus getValidationStatus() { return validationStatus; }
+    public void setValidationStatus(ValidationStatus validationStatus) { this.validationStatus = validationStatus; }
 }
