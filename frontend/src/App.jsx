@@ -1,11 +1,7 @@
-import RegistrationForm from './components/RegistrationForm'
+import MedRegistrationForm from './components/MedRegistrationForm'
 
 function App() {
-  return (
-    <div>
-      <RegistrationForm />
-    </div>
-  )
+  return <MedRegistrationForm />
 }
 
 export default App
