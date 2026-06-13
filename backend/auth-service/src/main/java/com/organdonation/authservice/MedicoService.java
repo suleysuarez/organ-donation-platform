@@ -24,14 +24,16 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class MedicoService {
-
     private final MedicalProfessionalProfileRepository repository;
     private final UserRepository userRepository;
+    private final RethusClient rethusClient;
 
     public MedicoService(MedicalProfessionalProfileRepository repository,
-                         UserRepository userRepository) {
+                         UserRepository userRepository,
+                         RethusClient rethusClient) {
         this.repository = repository;
         this.userRepository = userRepository;
+        this.rethusClient = rethusClient;
     }
 
     /** Listado paginado de médicos, con filtro opcional de texto libre {@code q}. */
@@ -85,5 +87,37 @@ public class MedicoService {
 
         MedicalProfessionalProfile saved = repository.save(profile);
         return MedicoResponseDTO.from(saved);
+    }
+    /**
+     * Valida un médico contra RETHUS y actualiza su estado de verificación
+     * según el resultado.
+     *
+     * @param id id del perfil del médico
+     * @param request datos de validación (session_id, captcha, etc.)
+     * @return resultado de la validación y nuevo estado de verificación
+     */
+    public RethusValidationResultDTO validarConRethus(Long id, ValidarMedicoRequestDTO request) {
+        MedicalProfessionalProfile profile = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No se encontró un médico con id " + id));
+
+        ValidarMedicoResponseDTO resultado = rethusClient.validarMedico(request);
+
+        String nuevoEstado = switch (resultado.getEstado()) {
+            case "AUTORIZADO" -> "VERIFICADO";
+            case "NO_ENCONTRADO" -> "RECHAZADO";
+            default -> profile.getVerificationStatus();
+        };
+
+        if (!nuevoEstado.equals(profile.getVerificationStatus())) {
+            profile.marcarVerificacion(nuevoEstado, null);
+            repository.save(profile);
+        }
+
+        return new RethusValidationResultDTO(
+                resultado.isEncontrado(),
+                resultado.getEstado(),
+                resultado.getMensaje(),
+                profile.getVerificationStatus()
+        );
     }
 }
