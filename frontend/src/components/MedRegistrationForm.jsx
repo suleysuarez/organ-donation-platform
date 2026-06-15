@@ -15,7 +15,7 @@ import bg3 from '../assets/Background-Register3.png'
 
 const backgrounds = [bg1, bg2, bg3]
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/medicos`
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
 
 function MedRegistrationForm() {
   const [fullName, setFullName] = useState('')
@@ -57,8 +57,8 @@ function MedRegistrationForm() {
 
     if (documentNumber.trim() === '') {
       newErrors.documentNumber = 'El número de documento es obligatorio'
-    } else if (isNaN(documentNumber)) {
-      newErrors.documentNumber = 'Solo números'
+    } else if (documentType === 'CC' && isNaN(documentNumber)) {
+      newErrors.documentNumber = 'La cédula de ciudadanía solo acepta números'
     }
 
     if (email.trim() === '') {
@@ -113,7 +113,10 @@ function MedRegistrationForm() {
         } else {
          
           const errorData = await response.json().catch(() => null)
-          setServerError(errorData?.message || 'Error del servidor al procesar el registro.')
+          const mensajeError = errorData?.error
+            || (Array.isArray(errorData?.errores) ? errorData.errores.join(', ') : null)
+            || 'Error del servidor al procesar el registro.'
+          setServerError(mensajeError)
         }
       } catch (error) {
 
@@ -267,4 +270,4 @@ function MedRegistrationForm() {
   )
 }
 
-export default MedRegistrationForm;
+export default MedRegistrationForm; 
