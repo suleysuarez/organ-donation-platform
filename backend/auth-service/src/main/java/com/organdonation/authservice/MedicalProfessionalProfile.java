@@ -28,7 +28,18 @@ public class MedicalProfessionalProfile {
         this.professionalProfile = professionalProfile;
         this.verificationStatus = "PENDIENTE";
     }
-
+    /**
+     * Actualiza el estado de verificación del perfil tras una validación
+     * (ej. resultado de RETHUS).
+     *
+     * @param nuevoEstado PENDIENTE, VERIFICADO o RECHAZADO
+     * @param verificadoPor id del usuario o sistema que realiza la verificación (puede ser null)
+     */
+    public void marcarVerificacion(String nuevoEstado, Long verificadoPor) {
+        this.verificationStatus = nuevoEstado;
+        this.verifiedBy = verificadoPor;
+        this.verifiedAt = Instant.now();
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
