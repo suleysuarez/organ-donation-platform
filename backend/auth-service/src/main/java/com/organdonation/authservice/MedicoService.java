@@ -3,6 +3,13 @@ package com.organdonation.authservice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Capa de servicio para la gestión de perfiles de profesionales de salud (médicos).
@@ -119,5 +126,71 @@ public class MedicoService {
                 resultado.getMensaje(),
                 profile.getVerificationStatus()
         );
+    }
+    /**
+     * Sube y almacena el certificado de un médico en el servidor local.
+     *
+     * <p>Valida formato (PDF, JPG, PNG) y tamaño máximo (5 MB).
+     * Guarda el archivo en la carpeta {@code uploads/certificados/} y
+     * actualiza {@code certificate_file_path} en el perfil.
+     *
+     * @param id   id del perfil del médico
+     * @param file archivo a subir
+     * @return ruta relativa del archivo guardado
+     * @task PDDO-86, PDDO-87, PDDO-88
+     */
+    public FileUploadResponseDTO subirCertificado(Long id, MultipartFile file) {
+        // PDDO-87: validar que el médico existe
+        MedicalProfessionalProfile profile = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No se encontró un médico con id " + id));
+
+        // PDDO-87: validar que el archivo no está vacío
+        if (file == null || file.isEmpty()) {
+            throw new RuntimeException("El archivo no puede estar vacío");
+        }
+
+        // PDDO-87: validar formato permitido
+        String contentType = file.getContentType();
+        List<String> formatosPermitidos = List.of(
+                "application/pdf", "image/jpeg", "image/png");
+        if (contentType == null || !formatosPermitidos.contains(contentType)) {
+            throw new RuntimeException(
+                    "Formato no permitido. Use PDF, JPG o PNG");
+        }
+
+        // PDDO-87: validar tamaño máximo (5 MB)
+        long maxBytes = 5 * 1024 * 1024;
+        if (file.getSize() > maxBytes) {
+            throw new RuntimeException(
+                    "El archivo supera el tamaño máximo permitido de 5 MB");
+        }
+
+        try {
+            // PDDO-86: crear carpeta si no existe
+            Path carpeta = Paths.get("uploads/certificados");
+            Files.createDirectories(carpeta);
+
+            // PDDO-86: generar nombre único para evitar colisiones
+            String extension = contentType.equals("application/pdf") ? ".pdf"
+                    : contentType.equals("image/jpeg") ? ".jpg" : ".png";
+            String nombreArchivo = "medico_" + id + "_" + UUID.randomUUID() + extension;
+
+            // PDDO-86: guardar archivo en disco
+            Path rutaCompleta = carpeta.resolve(nombreArchivo);
+            Files.write(rutaCompleta, file.getBytes());
+
+            // PDDO-88: asociar ruta al perfil del médico
+            String rutaRelativa = "uploads/certificados/" + nombreArchivo;
+            profile.actualizarCertificado(rutaRelativa);
+            repository.save(profile);
+
+            return new FileUploadResponseDTO(
+                    "Certificado subido exitosamente", rutaRelativa);
+
+        } catch (IOException e) {
+            throw new RuntimeException(
+                    "Error al guardar el archivo: " + e.getMessage());
+        }
     }
 }
