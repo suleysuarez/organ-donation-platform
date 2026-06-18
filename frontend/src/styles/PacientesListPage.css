@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
+
+.list-container {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 40px 5%;
+  box-sizing: border-box;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+/* Header */
+.list-header {
+  margin-bottom: 30px;
+}
+
+.list-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0c2a46;
+  margin: 0 0 6px 0;
+}
+
+.list-subtitle {
+  font-size: 14px;
+  color: #667085;
+  margin: 0;
+}
+
+/* Buscador */
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.search-input {
+  flex: 1;
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #008b9b;
+}
+
+.btn-search {
+  height: 44px;
+  padding: 0 24px;
+  background-color: #008b9b;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-search:hover {
+  background-color: #007684;
+}
+
+.btn-clear {
+  height: 44px;
+  padding: 0 20px;
+  background-color: transparent;
+  color: #667085;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear:hover {
+  border-color: #008b9b;
+  color: #008b9b;
+}
+
+/* Estados */
+.list-loading,
+.list-empty,
+.list-error {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 60px;
+}
+
+.list-loading { color: #667085; }
+.list-empty   { color: #667085; }
+.list-error   { color: #d92d20; }
+
+/* Grid de cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Card */
+.paciente-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.06);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: box-shadow 0.2s;
+}
+
+.paciente-card:hover {
+  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Header de la card */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: #0c2a46;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0c2a46;
+  margin: 0 0 3px 0;
+}
+
+.card-role {
+  font-size: 12px;
+  color: #667085;
+  margin: 0;
+}
+
+/* Body de la card */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.field-label {
+  color: #667085;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.field-value {
+  color: #344054;
+  text-align: right;
+  word-break: break-all;
+}
+
+/* Footer de la card */
+.card-footer {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid #f2f4f7;
+  padding-top: 14px;
+}
+
+/* Badges */
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.badge-active {
+  background-color: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-inactive {
+  background-color: #f2f4f7;
+  color: #667085;
+}
+
+.badge-paciente {
+  background-color: #f0f4ff;
+  color: #3538cd;
+}
+
+/* Paginación */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.btn-page {
+  height: 40px;
+  padding: 0 20px;
+  background-color: #ffffff;
+  color: #344054;
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-page:hover:not(:disabled) {
+  border-color: #008b9b;
+  color: #008b9b;
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #667085;
+}
