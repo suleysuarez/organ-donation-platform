@@ -3,6 +3,7 @@ package com.organdonation.authservice;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 /**
  * Controlador REST para la gestión de procesos de donación.
@@ -41,5 +42,25 @@ public class DonationProcessController {
             @PathVariable Long id,
             @Valid @RequestBody UpdateProcessStateRequestDTO request) {
         return processService.actualizarEstado(id, request);
+    }
+    /** Obtiene todos los procesos de donación de un donante. */
+    @GetMapping("/donante/{donorId}")
+    public List<DonationProcessResponseDTO> listarPorDonante(
+            @PathVariable Long donorId) {
+        return processService.listarPorDonante(donorId);
+    }
+
+    /** Obtiene todos los procesos de donación de un receptor. */
+    @GetMapping("/receptor/{recipientId}")
+    public List<DonationProcessResponseDTO> listarPorReceptor(
+            @PathVariable Long recipientId) {
+        return processService.listarPorReceptor(recipientId);
+    }
+
+    /** Obtiene el historial de estados de un proceso de donación. */
+    @GetMapping("/{id}/historial")
+    public List<ProcessStatusHistoryResponseDTO> obtenerHistorial(
+            @PathVariable Long id) {
+        return processService.obtenerHistorial(id);
     }
 }

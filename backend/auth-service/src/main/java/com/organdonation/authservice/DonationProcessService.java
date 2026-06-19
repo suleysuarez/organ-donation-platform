@@ -108,4 +108,54 @@ public class DonationProcessService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No se encontró el proceso con id: " + id));
     }
+    /**
+     * Obtiene todos los procesos de donación de un donante.
+     *
+     * @param donorId id del donante
+     * @return lista de procesos como {@link DonationProcessResponseDTO}
+     * @task PDDO-93
+     */
+    public List<DonationProcessResponseDTO> listarPorDonante(Long donorId) {
+        donorRepository.findById(donorId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No se encontró el donante con id: " + donorId));
+        return processRepository.findByDonorId(donorId)
+                .stream()
+                .map(DonationProcessResponseDTO::from)
+                .toList();
+    }
+
+    /**
+     * Obtiene todos los procesos de donación de un receptor.
+     *
+     * @param recipientId id del receptor
+     * @return lista de procesos como {@link DonationProcessResponseDTO}
+     * @task PDDO-93
+     */
+    public List<DonationProcessResponseDTO> listarPorReceptor(Long recipientId) {
+        recipientRepository.findById(recipientId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No se encontró el receptor con id: " + recipientId));
+        return processRepository.findByRecipientId(recipientId)
+                .stream()
+                .map(DonationProcessResponseDTO::from)
+                .toList();
+    }
+
+    /**
+     * Obtiene el historial de cambios de estado de un proceso de donación.
+     *
+     * @param processId id del proceso
+     * @return lista de cambios de estado en orden cronológico
+     * @task PDDO-93
+     */
+    public List<ProcessStatusHistoryResponseDTO> obtenerHistorial(Long processId) {
+        processRepository.findById(processId)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "No se encontró el proceso con id: " + processId));
+        return historyRepository.findByProcessIdOrderByChangedAtAsc(processId)
+                .stream()
+                .map(ProcessStatusHistoryResponseDTO::from)
+                .toList();
+    }
 }
