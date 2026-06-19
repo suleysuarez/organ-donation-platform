@@ -3,8 +3,8 @@ package com.organdonation.authservice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -64,12 +64,59 @@ public class PatientController {
         return ResponseEntity.ok(new UserDto(paciente));
     }
 
-    // ========== CREAR PACIENTE (rol PACIENTE automático) ==========
+    // ========== CREAR PACIENTE (con validaciones de negocio) ==========
     @PostMapping("/pacientes")
     public ResponseEntity<?> crearPaciente(@RequestBody RegisterRequestDTO dto) {
+
+        // --- Validaciones de negocio ---
+        List<String> errores = new ArrayList<>();
+
+        // Email único
         if (userRepository.existsByEmail(dto.getEmail())) {
-            return ResponseEntity.badRequest().body("El email ya está registrado");
+            errores.add("El email ya está registrado");
         }
+
+        // DNI único (si se envía)
+        if (dto.getDni() != null && !dto.getDni().isEmpty() &&
+                userRepository.findAll().stream().anyMatch(u -> dto.getDni().equals(u.getDni()))) {
+            errores.add("El DNI ya está registrado");
+        }
+
+        // Fecha de nacimiento no futura
+        if (dto.getBirthDate() != null && dto.getBirthDate().isAfter(LocalDate.now())) {
+            errores.add("La fecha de nacimiento no puede ser futura");
+        }
+
+        // Teléfono al menos 7 dígitos
+        if (dto.getPhone() != null && !dto.getPhone().isEmpty() &&
+                dto.getPhone().replaceAll("[^0-9]", "").length() < 7) {
+            errores.add("El teléfono debe tener al menos 7 dígitos");
+        }
+
+        // Nombre y apellido sin números
+        if (dto.getFirstName() != null && dto.getFirstName().matches(".*\\d.*")) {
+            errores.add("El nombre no puede contener números");
+        }
+        if (dto.getLastName() != null && dto.getLastName().matches(".*\\d.*")) {
+            errores.add("El apellido no puede contener números");
+        }
+
+        // Username al menos 3 caracteres
+        if (dto.getUsername() != null && dto.getUsername().length() < 3) {
+            errores.add("El username debe tener al menos 3 caracteres");
+        }
+
+        // Contraseña al menos 8 caracteres
+        if (dto.getPassword() != null && dto.getPassword().length() < 8) {
+            errores.add("La contraseña debe tener al menos 8 caracteres");
+        }
+
+        // Si hay errores, devolver 400 con la lista
+        if (!errores.isEmpty()) {
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // --- Crear usuario ---
         User user = new User();
         user.setEmail(dto.getEmail());
         user.setPasswordHash(dto.getPassword());
@@ -96,7 +143,7 @@ public class PatientController {
         return ResponseEntity.ok("Paciente registrado exitosamente");
     }
 
-    // ========== ACTUALIZAR PACIENTE ==========
+    // ========== ACTUALIZAR PACIENTE (con validaciones de negocio) ==========
     @PutMapping("/pacientes/{id}")
     public ResponseEntity<?> actualizarPaciente(@PathVariable Long id, @RequestBody RegisterRequestDTO dto) {
         Optional<User> optionalPaciente = userRepository.findById(id);
@@ -108,6 +155,44 @@ public class PatientController {
             return ResponseEntity.badRequest().body("El usuario no es un paciente");
         }
 
+        // --- Validaciones de negocio ---
+        List<String> errores = new ArrayList<>();
+
+        // Fecha de nacimiento no futura
+        if (dto.getBirthDate() != null && dto.getBirthDate().isAfter(LocalDate.now())) {
+            errores.add("La fecha de nacimiento no puede ser futura");
+        }
+
+        // Teléfono al menos 7 dígitos
+        if (dto.getPhone() != null && !dto.getPhone().isEmpty() &&
+                dto.getPhone().replaceAll("[^0-9]", "").length() < 7) {
+            errores.add("El teléfono debe tener al menos 7 dígitos");
+        }
+
+        // Nombre y apellido sin números
+        if (dto.getFirstName() != null && dto.getFirstName().matches(".*\\d.*")) {
+            errores.add("El nombre no puede contener números");
+        }
+        if (dto.getLastName() != null && dto.getLastName().matches(".*\\d.*")) {
+            errores.add("El apellido no puede contener números");
+        }
+
+        // Username al menos 3 caracteres
+        if (dto.getUsername() != null && dto.getUsername().length() < 3) {
+            errores.add("El username debe tener al menos 3 caracteres");
+        }
+
+        // Contraseña al menos 8 caracteres
+        if (dto.getPassword() != null && dto.getPassword().length() < 8) {
+            errores.add("La contraseña debe tener al menos 8 caracteres");
+        }
+
+        // Si hay errores, devolver 400 con la lista
+        if (!errores.isEmpty()) {
+            return ResponseEntity.badRequest().body(errores);
+        }
+
+        // --- Actualizar campos ---
         paciente.setUsername(dto.getUsername());
         paciente.setFirstName(dto.getFirstName());
         paciente.setLastName(dto.getLastName());
