@@ -7,6 +7,9 @@ import jakarta.validation.Valid;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import jakarta.persistence.criteria.Predicate;
 
 @RestController
 @RequestMapping("/api/reportes")
@@ -142,5 +145,52 @@ public class MedicalReportController {
         }
         reportRepository.deleteById(id);
         return ResponseEntity.ok("Reporte eliminado exitosamente");
+    }
+    // ========== CONSULTA DE HISTORIAL CLÍNICO DE UN PACIENTE ==========
+    @GetMapping("/historial/{patientId}")
+    public ResponseEntity<?> historialPaciente(
+            @PathVariable Long patientId,
+            @RequestParam(required = false) LocalDate fechaDesde,
+            @RequestParam(required = false) LocalDate fechaHasta,
+            @RequestParam(required = false) String status) {
+
+        // Validar que el paciente existe y es PACIENTE
+        Optional<User> patientOpt = userRepository.findById(patientId);
+        if (patientOpt.isEmpty() || !"PACIENTE".equals(patientOpt.get().getRole())) {
+            return ResponseEntity.badRequest().body("El paciente no existe o no tiene rol PACIENTE");
+        }
+
+        // Convertir estado a enum, de forma que sea efectivamente final para la lambda
+        final MedicalReport.ReportStatus reportStatus = (status != null && !status.isEmpty())
+                ? MedicalReport.ReportStatus.valueOf(status.toUpperCase())
+                : null;
+
+        List<MedicalReport> reportes;
+
+        if (fechaDesde != null && fechaHasta != null) {
+            if (reportStatus != null) {
+                // Filtro combinado: paciente + rango de fechas + estado
+                final MedicalReport.ReportStatus finalStatus = reportStatus;
+                reportes = reportRepository.findAll((root, query, cb) -> {
+                    List<Predicate> predicates = new ArrayList<>();
+                    predicates.add(cb.equal(root.get("patient").get("id"), patientId));
+                    predicates.add(cb.between(root.get("reportDate"), fechaDesde, fechaHasta));
+                    predicates.add(cb.equal(root.get("status"), finalStatus));
+                    query.orderBy(cb.desc(root.get("reportDate")));
+                    return cb.and(predicates.toArray(new Predicate[0]));
+                });
+            } else {
+                reportes = reportRepository.findByPatientIdAndReportDateBetweenOrderByReportDateDesc(patientId, fechaDesde, fechaHasta);
+            }
+        } else if (reportStatus != null) {
+            reportes = reportRepository.findByPatientIdAndStatusOrderByReportDateDesc(patientId, reportStatus);
+        } else {
+            reportes = reportRepository.findByPatientIdOrderByReportDateDesc(patientId);
+        }
+
+        List<MedicalReportResponseDTO> response = reportes.stream()
+                .map(MedicalReportResponseDTO::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(response);
     }
 }
