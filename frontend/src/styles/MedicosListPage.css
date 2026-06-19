@@ -194,6 +194,29 @@
   padding-top: 14px;
 }
 
+/* Acción "Ver Detalle" — agregado para MedicoDetailPage */
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-detail {
+  background: none;
+  border: none;
+  color: #008b9b;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s;
+}
+
+.btn-detail:hover {
+  color: #007684;
+  text-decoration: underline;
+}
+
 /* Badges */
 .badge {
   font-size: 11px;
