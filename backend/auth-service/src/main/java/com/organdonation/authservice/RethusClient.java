@@ -3,7 +3,8 @@ package com.organdonation.authservice;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
 /**
  * Cliente HTTP para el microservicio RETHUS (FastAPI).
  *
@@ -26,25 +27,29 @@ public class RethusClient {
         this.baseUrl = baseUrl;
     }
 
-    /**
-     * Paso 1: inicia una sesión de validación en RETHUS.
-     *
-     * @return sessionId, imagen del captcha en base64 y tiempo de expiración
-     */
     public IniciarValidacionResponse iniciarValidacion() {
-        String url = baseUrl + "/validar-medico/iniciar";
-        return restTemplate.postForObject(url, null, IniciarValidacionResponse.class);
+        try {
+            String url = baseUrl + "/validar-medico/iniciar";
+            return restTemplate.postForObject(url, null, IniciarValidacionResponse.class);
+        } catch (ResourceAccessException ex) {
+            throw new ExternalServiceException("RETHUS",
+                    "No se pudo conectar con el microservicio RETHUS", ex);
+        } catch (RestClientException ex) {
+            throw new ExternalServiceException("RETHUS",
+                    "Error al iniciar la sesión de validación RETHUS: " + ex.getMessage(), ex);
+        }
     }
 
-    /**
-     * Paso 2: envía los datos del médico y el captcha resuelto para validar
-     * contra el registro RETHUS.
-     *
-     * @param request datos del médico, session_id y captcha resuelto
-     * @return resultado de la validación (encontrado, estado, datos, mensaje)
-     */
     public ValidarMedicoResponseDTO validarMedico(ValidarMedicoRequestDTO request) {
-        String url = baseUrl + "/validar-medico";
-        return restTemplate.postForObject(url, request, ValidarMedicoResponseDTO.class);
+        try {
+            String url = baseUrl + "/validar-medico";
+            return restTemplate.postForObject(url, request, ValidarMedicoResponseDTO.class);
+        } catch (ResourceAccessException ex) {
+            throw new ExternalServiceException("RETHUS",
+                    "No se pudo conectar con el microservicio RETHUS", ex);
+        } catch (RestClientException ex) {
+            throw new ExternalServiceException("RETHUS",
+                    "Error al validar el médico en RETHUS: " + ex.getMessage(), ex);
+        }
     }
 }
