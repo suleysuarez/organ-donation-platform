@@ -117,8 +117,22 @@
   color: #98a2b3;
 }
 
+.textarea-custom {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  resize: vertical;
+  transition: border-color 0.2s;
+}
+
 .input-with-icon input:focus,
-.select-custom:focus {
+.select-custom:focus,
+.textarea-custom:focus {
   outline: none;
   border-color: #008b9b;
 }

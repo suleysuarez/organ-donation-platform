@@ -2,40 +2,17 @@ import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import '../styles/Dashboard.css'
 
+import backgroundImage from '../assets/Background-Register2.png' 
+
 const NAV_ITEMS = [
-  {
-    label: 'Dashboard',
-    icon: '🏠',
-    path: '/dashboard',
-  },
-  {
-    label: 'Médicos',
-    icon: '👨‍⚕️',
-    path: '/List/medicos',
-  },
-  {
-    label: 'Pacientes',
-    icon: '🧑‍🦯',
-    path: '/List/pacientes',
-  },
-  {
-    label: 'Reportes Médicos',
-    icon: '📋',
-    path: '/reportes',
-  },
-  {
-    label: 'Donantes y Receptores',
-    icon: '❤️',
-    path: '/donantes',
-  },
-  {
-    label: 'Seguimiento de Donación',
-    icon: '🔍',
-    path: '/seguimiento',
-  },
+  { label: 'Dashboard', icon: '🏠', path: '/dashboard' },
+  { label: 'Médicos', icon: '👨‍⚕️', path: '/List/medicos' },
+  { label: 'Pacientes', icon: '🧑‍🦯', path: '/List/pacientes' },
+  { label: 'Reportes Médicos', icon: '📋', path: '/reportes' },
+  { label: 'Donantes y Receptores', icon: '❤️', path: '/donantes' },
+  { label: 'Seguimiento de Donación', icon: '🔍', path: '/seguimiento' },
 ]
 
-// Datos mock — reemplazar con llamadas reales al backend cuando estén disponibles
 const STATS = [
   { label: 'Médicos Registrados', value: '24', color: '#008b9b', icon: '👨‍⚕️' },
   { label: 'Pacientes Activos', value: '138', color: '#0c2a46', icon: '🧑‍🦯' },
@@ -72,7 +49,10 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard-layout">
+    <div 
+      className="dashboard-layout" 
+      style={{ '--bg-image': `url(${backgroundImage})` }}
+    >
 
       {/* SIDEBAR */}
       <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
@@ -112,20 +92,20 @@ function Dashboard() {
       {/* CONTENIDO PRINCIPAL */}
       <main className="dashboard-main">
 
-        {/* Header */}
         <div className="dashboard-header">
-          <div>
-            <h1 className="dashboard-title">Panel de Control</h1>
-            <p className="dashboard-subtitle">Bienvenido al sistema de gestión de donación de órganos</p>
-          </div>
-          <div className="header-date">
-            {new Date().toLocaleDateString('es-CO', {
-              weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            })}
+          <div className="header-wrapper">
+            <div>
+              <h1 className="dashboard-title">Panel de Control</h1>
+              <p className="dashboard-subtitle">Bienvenido al sistema de gestión de donación de órganos</p>
+            </div>
+            <div className="header-date">
+              {new Date().toLocaleDateString('es-CO', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+              })}
+            </div>
           </div>
         </div>
 
-        {/* Tarjetas de estadísticas */}
         <div className="stats-grid">
           {STATS.map((stat) => (
             <div className="stat-card" key={stat.label} style={{ borderTop: `4px solid ${stat.color}` }}>
@@ -138,7 +118,6 @@ function Dashboard() {
           ))}
         </div>
 
-        {/* Actividad reciente */}
         <div className="section-card">
           <h2 className="section-title">Actividad Reciente</h2>
           <table className="activity-table">
@@ -165,29 +144,6 @@ function Dashboard() {
               ))}
             </tbody>
           </table>
-        </div>
-
-        {/* Accesos rápidos */}
-        <div className="section-card">
-          <h2 className="section-title">Accesos Rápidos</h2>
-          <div className="quick-access-grid">
-            <button className="quick-btn" onClick={() => navigate('/register-medic')}>
-              <span>👨‍⚕️</span>
-              <span>Registrar Médico</span>
-            </button>
-            <button className="quick-btn" onClick={() => navigate('/register-paciente')}>
-              <span>🧑‍🦯</span>
-              <span>Registrar Paciente</span>
-            </button>
-            <button className="quick-btn" onClick={() => navigate('/List/medicos')}>
-              <span>📋</span>
-              <span>Ver Médicos</span>
-            </button>
-            <button className="quick-btn" onClick={() => navigate('/List/pacientes')}>
-              <span>📋</span>
-              <span>Ver Pacientes</span>
-            </button>
-          </div>
         </div>
 
       </main>

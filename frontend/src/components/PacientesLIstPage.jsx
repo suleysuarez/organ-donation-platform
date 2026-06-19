@@ -1,85 +1,7 @@
 import { useState, useEffect } from 'react'
 import '../styles/PacientesListPage.css'
 
-// TODO: actualizar esta URL cuando el backend implemente el endpoint de pacientes
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/pacientes`
-
-// Datos de ejemplo mientras el backend no está listo
-const PACIENTES_MOCK = [
-  {
-    id: 1,
-    nombre: 'Ana María Torres',
-    email: 'ana.torres@email.com',
-    documentType: 'CC',
-    documentNumber: '1098234567',
-    telefono: '3001234567',
-    fechaNacimiento: '1990-05-14',
-    tipoSangre: 'O+',
-    isActive: true,
-    createdAt: '2024-01-10T10:00:00Z'
-  },
-  {
-    id: 2,
-    nombre: 'Carlos Andrés Gómez',
-    email: 'carlos.gomez@email.com',
-    documentType: 'CC',
-    documentNumber: '1023456789',
-    telefono: '3109876543',
-    fechaNacimiento: '1985-11-22',
-    tipoSangre: 'A+',
-    isActive: true,
-    createdAt: '2024-02-05T08:30:00Z'
-  },
-  {
-    id: 3,
-    nombre: 'Laura Sofía Ramírez',
-    email: 'laura.ramirez@email.com',
-    documentType: 'CE',
-    documentNumber: '987654321',
-    telefono: '3205556677',
-    fechaNacimiento: '1995-03-08',
-    tipoSangre: 'B-',
-    isActive: false,
-    createdAt: '2024-03-20T15:45:00Z'
-  },
-  {
-    id: 4,
-    nombre: 'Jorge Luis Herrera',
-    email: 'jorge.herrera@email.com',
-    documentType: 'CC',
-    documentNumber: '80123456',
-    telefono: '3157778899',
-    fechaNacimiento: '1978-07-30',
-    tipoSangre: 'AB+',
-    isActive: true,
-    createdAt: '2024-04-12T09:15:00Z'
-  },
-  {
-    id: 5,
-    nombre: 'Valentina Castro',
-    email: 'valentina.castro@email.com',
-    documentType: 'CC',
-    documentNumber: '1045678901',
-    telefono: '3002223344',
-    fechaNacimiento: '2000-12-01',
-    tipoSangre: 'O-',
-    isActive: true,
-    createdAt: '2024-05-01T11:00:00Z'
-  },
-  {
-    id: 6,
-    nombre: 'Miguel Ángel Pérez',
-    email: 'miguel.perez@email.com',
-    documentType: 'CC',
-    documentNumber: '71234567',
-    telefono: '3184445566',
-    fechaNacimiento: '1970-09-15',
-    tipoSangre: 'A-',
-    isActive: false,
-    createdAt: '2024-06-18T14:20:00Z'
-  }
-]
-
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/receptores`
 const PAGE_SIZE = 6
 
 function PacientesListPage() {
@@ -91,8 +13,6 @@ function PacientesListPage() {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
 
-  // TODO: reemplazar este useEffect por la llamada real al backend
-  // cuando el endpoint GET /api/pacientes esté disponible
   useEffect(() => {
     fetchPacientes()
   }, [page, search])
@@ -101,54 +21,35 @@ function PacientesListPage() {
     setLoading(true)
     setServerError('')
 
-    // --- MOCK: simula la respuesta del backend ---
-    // Eliminar este bloque y descomentar el fetch real cuando el backend esté listo
-    setTimeout(() => {
-      let resultado = PACIENTES_MOCK
+    try {
+      const params = new URLSearchParams({
+        page,
+        size: PAGE_SIZE,
+        sort: 'fullName,asc'
+      })
+      if (search.trim()) params.append('q', search.trim())
 
-      if (search.trim()) {
-        const q = search.trim().toLowerCase()
-        resultado = PACIENTES_MOCK.filter(
-          (p) =>
-            p.nombre.toLowerCase().includes(q) ||
-            p.documentNumber.includes(q) ||
-            p.email.toLowerCase().includes(q)
-        )
+      const token = localStorage.getItem('token')
+      const response = await fetch(`${API_URL}?${params}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setPacientes(data.content || [])
+        setTotalPages(data.totalPages || 0)
+      } else {
+        setServerError('Error al cargar la lista de pacientes.')
       }
-
-      const inicio = page * PAGE_SIZE
-      const fin = inicio + PAGE_SIZE
-      setPacientes(resultado.slice(inicio, fin))
-      setTotalPages(Math.ceil(resultado.length / PAGE_SIZE))
+    } catch (error) {
+      setServerError('No se pudo conectar con el servidor. Verifica si el backend está encendido.')
+    } finally {
       setLoading(false)
-    }, 400)
-
-    // --- FETCH REAL: descomentar cuando el backend esté listo ---
-    // try {
-    //   const params = new URLSearchParams({
-    //     page,
-    //     size: PAGE_SIZE,
-    //     sort: 'nombre,asc'
-    //   })
-    //   if (search.trim()) params.append('q', search.trim())
-    //
-    //   const token = localStorage.getItem('token')
-    //   const response = await fetch(`${API_URL}?${params}`, {
-    //     headers: { Authorization: `Bearer ${token}` }
-    //   })
-    //
-    //   if (response.ok) {
-    //     const data = await response.json()
-    //     setPacientes(data.content)
-    //     setTotalPages(data.totalPages)
-    //   } else {
-    //     setServerError('Error al cargar los pacientes.')
-    //   }
-    // } catch (error) {
-    //   setServerError('No se pudo conectar con el servidor.')
-    // } finally {
-    //   setLoading(false)
-    // }
+    }
   }
 
   const handleSearch = (e) => {
@@ -168,7 +69,7 @@ function PacientesListPage() {
       <div className="list-header">
         <h1>Pacientes Registrados</h1>
         <p className="list-subtitle">
-          Consulta y gestiona los pacientes registrados en el sistema
+          Consulta y gestiona los pacientes receptores registrados en el sistema
         </p>
       </div>
 
@@ -177,7 +78,7 @@ function PacientesListPage() {
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Buscar por nombre, documento o correo..."
+          placeholder="Buscar por nombre o número de documento..."
           className="search-input"
         />
         <button type="submit" className="btn-search">
@@ -207,18 +108,18 @@ function PacientesListPage() {
               <div className="paciente-card" key={paciente.id}>
                 <div className="card-header">
                   <div className="card-avatar">
-                    {paciente.nombre.charAt(0).toUpperCase()}
+                    {paciente.fullName ? paciente.fullName.charAt(0).toUpperCase() : 'P'}
                   </div>
                   <div>
-                    <h3 className="card-name">{paciente.nombre}</h3>
-                    <p className="card-role">Paciente</p>
+                    <h3 className="card-name">{paciente.fullName}</h3>
+                    <p className="card-role">Receptor</p>
                   </div>
                 </div>
 
                 <div className="card-body">
                   <div className="card-field">
                     <span className="field-label">Correo</span>
-                    <span className="field-value">{paciente.email}</span>
+                    <span className="field-value">{paciente.contactEmail || 'No registrado'}</span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Documento</span>
@@ -229,13 +130,13 @@ function PacientesListPage() {
                   <div className="card-field">
                     <span className="field-label">Teléfono</span>
                     <span className="field-value">
-                      {paciente.telefono || 'No registrado'}
+                      {paciente.contactPhone || 'No registrado'}
                     </span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Tipo de Sangre</span>
                     <span className="field-value">
-                      {paciente.tipoSangre || 'No registrado'}
+                      {paciente.bloodType ? paciente.bloodType.replace('_POS', '+').replace('_NEG', '-') : 'No registrado'}
                     </span>
                   </div>
                   <div className="card-field">
@@ -252,10 +153,10 @@ function PacientesListPage() {
                   <span className="badge badge-paciente">Paciente</span>
                   <span
                     className={`badge ${
-                      paciente.isActive ? 'badge-active' : 'badge-inactive'
+                      paciente.isActive !== false ? 'badge-active' : 'badge-inactive'
                     }`}
                   >
-                    {paciente.isActive ? 'Activo' : 'Inactivo'}
+                    {paciente.isActive !== false ? 'Activo' : 'Inactivo'}
                   </span>
                 </div>
               </div>

@@ -1,18 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
 
-/* ── Layout general ── */
 .dashboard-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #f5f7fa;
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   font-family: 'Nunito Sans', sans-serif;
 }
 
-/* ── Sidebar ── */
 .sidebar {
   display: flex;
   flex-direction: column;
-  background-color: #0c2a46;
+  background-color: #007684;
   transition: width 0.3s ease;
   overflow: hidden;
   flex-shrink: 0;
@@ -24,7 +26,6 @@
 .sidebar-open  { width: 240px; }
 .sidebar-closed { width: 68px; }
 
-/* Header del sidebar */
 .sidebar-header {
   display: flex;
   align-items: center;
@@ -62,7 +63,6 @@
   background: rgba(255, 255, 255, 0.2);
 }
 
-/* Nav items */
 .sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -117,7 +117,6 @@
   white-space: nowrap;
 }
 
-/* Footer del sidebar */
 .sidebar-footer {
   padding: 12px 8px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -147,7 +146,6 @@
   color: #fda29b;
 }
 
-/* ── Contenido principal ── */
 .dashboard-main {
   flex: 1;
   padding: 36px 40px;
@@ -155,12 +153,21 @@
   min-width: 0;
 }
 
-/* Header */
 .dashboard-header {
+  margin-bottom: 32px;
+  width: 100%;
+}
+
+.header-wrapper {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.06);
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 32px;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .dashboard-title {
@@ -179,14 +186,13 @@
 .header-date {
   font-size: 13px;
   color: #667085;
-  background: #ffffff;
+  background: #f5f7fa;
   padding: 8px 16px;
   border-radius: 10px;
   border: 1px solid #e4e7ec;
   text-transform: capitalize;
 }
 
-/* ── Stats grid ── */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -227,7 +233,6 @@
   font-weight: 600;
 }
 
-/* ── Section card ── */
 .section-card {
   background: #ffffff;
   border-radius: 16px;
@@ -243,7 +248,6 @@
   margin: 0 0 20px 0;
 }
 
-/* ── Tabla de actividad ── */
 .activity-table {
   width: 100%;
   border-collapse: collapse;
@@ -275,7 +279,6 @@
   background-color: #f9fafb;
 }
 
-/* ── Badges ── */
 .badge {
   font-size: 11px;
   font-weight: 700;
@@ -302,38 +305,4 @@
 .badge-process {
   background-color: #f0f4ff;
   color: #3538cd;
-}
-
-/* ── Accesos rápidos ── */
-.quick-access-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 14px;
-}
-
-.quick-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  padding: 20px 16px;
-  background-color: #f5f7fa;
-  border: 1px solid #e4e7ec;
-  border-radius: 14px;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: #344054;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.quick-btn span:first-child {
-  font-size: 28px;
-}
-
-.quick-btn:hover {
-  background-color: #008b9b;
-  color: #ffffff;
-  border-color: #008b9b;
 }
