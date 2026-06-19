@@ -22,25 +22,58 @@ public class PatientController {
     public ResponseEntity<List<UserDto>> listarPacientes(
             @RequestParam(required = false) String nombre,
             @RequestParam(required = false) String documento,
-            @RequestParam(required = false) String ciudad) {
+            @RequestParam(required = false) String ciudad,
+            @RequestParam(required = false) String bloodType,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) Boolean isDonor,
+            @RequestParam(required = false) String validationStatus) {
 
         Specification<User> spec = Specification.where(
                 (root, query, cb) -> cb.equal(root.get("role"), "PACIENTE")
         );
 
+        // Filtro por nombre (firstName o lastName)
         if (nombre != null && !nombre.isEmpty()) {
             spec = spec.and((root, query, cb) -> cb.or(
                     cb.like(cb.lower(root.get("firstName")), "%" + nombre.toLowerCase() + "%"),
                     cb.like(cb.lower(root.get("lastName")), "%" + nombre.toLowerCase() + "%")
             ));
         }
+
+        // Filtro por documento
         if (documento != null && !documento.isEmpty()) {
             spec = spec.and((root, query, cb) ->
                     cb.like(root.get("dni"), "%" + documento + "%"));
         }
+
+        // Filtro por ciudad
         if (ciudad != null && !ciudad.isEmpty()) {
             spec = spec.and((root, query, cb) ->
                     cb.like(cb.lower(root.get("city")), "%" + ciudad.toLowerCase() + "%"));
+        }
+
+        // Filtro por tipo de sangre
+        if (bloodType != null && !bloodType.isEmpty()) {
+            String cleanedBloodType = bloodType.replace(' ', '+');
+            BloodType bt = BloodType.fromString(cleanedBloodType);
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("bloodType"), bt));
+        }
+
+        // Filtro por género
+        if (gender != null && !gender.isEmpty()) {
+            Gender g = Gender.fromString(gender);
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("gender"), g));
+        }
+
+        // Filtro por estado de donante
+        if (isDonor != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("isDonor"), isDonor));
+        }
+
+        // Filtro por estado de validación
+        if (validationStatus != null && !validationStatus.isEmpty()) {
+            ValidationStatus vs = ValidationStatus.fromString(validationStatus);
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("validationStatus"), vs));
         }
 
         List<User> pacientes = userRepository.findAll(spec);
