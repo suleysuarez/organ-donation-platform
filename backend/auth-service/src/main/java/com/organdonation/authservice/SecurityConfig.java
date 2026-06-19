@@ -15,7 +15,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // TODO: /api/medicos/** queda público temporalmente; restringir
                         // cuando se implemente autenticación (login + JWT).
-                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/medicos/**").permitAll()
+                        .requestMatchers("/h2-console/**", "/api/auth/**", "/api/medicos/**", "/api/pacientes/**", "/api/reportes/**").permitAll()
                         // Documentación OpenAPI / Swagger UI (pública).
                         .requestMatchers("/docs", "/docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/v3/api-docs", "/v3/api-docs/**").permitAll()
