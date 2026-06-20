@@ -40,6 +40,14 @@ public class MedicalProfessionalProfile {
         this.verifiedBy = verificadoPor;
         this.verifiedAt = Instant.now();
     }
+    /**
+     * Actualiza la ruta del certificado del médico tras una subida exitosa.
+     *
+     * @param rutaCertificado ruta relativa del archivo guardado en el servidor
+     */
+    public void actualizarCertificado(String rutaCertificado) {
+        this.certificateFilePath = rutaCertificado;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

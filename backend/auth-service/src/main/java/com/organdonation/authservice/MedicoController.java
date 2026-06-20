@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Controlador REST para la gestión de profesionales de salud (médicos).
@@ -55,5 +56,13 @@ public class MedicoController {
             @PathVariable Long id,
             @RequestBody ValidarMedicoRequestDTO request) {
         return medicoService.validarConRethus(id, request);
+    }
+    /** Sube el certificado de un médico y lo asocia a su perfil. */
+    @PostMapping("/{id}/certificado")
+    public ResponseEntity<FileUploadResponseDTO> subirCertificado(
+            @PathVariable Long id,
+            @RequestParam("archivo") MultipartFile archivo) {
+        FileUploadResponseDTO response = medicoService.subirCertificado(id, archivo);
+        return ResponseEntity.status(201).body(response);
     }
 }
