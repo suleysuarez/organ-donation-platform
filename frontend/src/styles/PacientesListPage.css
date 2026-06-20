@@ -70,24 +70,6 @@
   background-color: #007684;
 }
 
-.btn-clear {
-  height: 44px;
-  padding: 0 20px;
-  background-color: transparent;
-  color: #667085;
-  border: 1px solid #d0d5dd;
-  border-radius: 12px;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-clear:hover {
-  border-color: #008b9b;
-  color: #008b9b;
-}
-
 /* Estados */
 .list-loading,
 .list-empty,
@@ -109,7 +91,7 @@
   margin-bottom: 30px;
 }
 
-/* Card */
+/* Card de Paciente */
 .paciente-card {
   background-color: #ffffff;
   border-radius: 16px;
@@ -136,7 +118,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #0c2a46;
+  background-color: #0c2a46; /* Color distinto al médico para diferenciar */
   color: white;
   font-size: 20px;
   font-weight: 700;
@@ -147,13 +129,13 @@
 }
 
 .card-name {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: #0c2a46;
-  margin: 0 0 3px 0;
+  margin: 0;
 }
 
-.card-role {
+.card-id {
   font-size: 12px;
   color: #667085;
   margin: 0;
@@ -176,46 +158,29 @@
 .field-label {
   color: #667085;
   font-weight: 600;
-  flex-shrink: 0;
 }
 
 .field-value {
   color: #344054;
-  text-align: right;
-  word-break: break-all;
 }
 
-/* Footer de la card */
-.card-footer {
+/* Botón detalle */
+.card-actions {
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
   border-top: 1px solid #f2f4f7;
   padding-top: 14px;
 }
 
-/* Badges */
-.badge {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 20px;
+.btn-detail {
+  background: none;
+  border: none;
+  color: #008b9b;
   font-family: 'Nunito Sans', sans-serif;
-}
-
-.badge-active {
-  background-color: #e0f2fe;
-  color: #0369a1;
-}
-
-.badge-inactive {
-  background-color: #f2f4f7;
-  color: #667085;
-}
-
-.badge-paciente {
-  background-color: #f0f4ff;
-  color: #3538cd;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
 }
 
 /* Paginación */
@@ -224,7 +189,7 @@
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin-top: 10px;
+  margin-top: 30px;
 }
 
 .btn-page {
@@ -234,24 +199,6 @@
   color: #344054;
   border: 1px solid #d0d5dd;
   border-radius: 10px;
-  font-family: 'Nunito Sans', sans-serif;
-  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-page:hover:not(:disabled) {
-  border-color: #008b9b;
-  color: #008b9b;
-}
-
-.btn-page:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.page-info {
-  font-size: 14px;
-  color: #667085;
 }

@@ -49,12 +49,21 @@ function MedicosListPage() {
       })
       if (search.trim()) params.append('q', search.trim())
 
-      const response = await fetch(`${API_URL}?${params}`)
+      const token = localStorage.getItem('token')
+      
+      const response = await fetch(`${API_URL}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
 
       if (response.ok) {
         const data = await response.json()
         setMedicos(data.content)
         setTotalPages(data.totalPages)
+      } else if (response.status === 403) {
+        setServerError('No tienes permisos para ver esta información.')
       } else {
         setServerError('Error al cargar los médicos.')
       }

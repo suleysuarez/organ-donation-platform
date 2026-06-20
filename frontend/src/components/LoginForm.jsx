@@ -11,7 +11,7 @@ import bg3 from '../assets/Background-Register3.png'
 
 const backgrounds = [bg1, bg2, bg3]
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/auth/login`
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`
 
 function LoginForm() {
   const [email, setEmail] = useState('')
