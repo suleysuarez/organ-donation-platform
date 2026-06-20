@@ -8,14 +8,17 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final JwtAuthFilter jwtAuthFilter;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService, JwtAuthFilter jwtAuthFilter) {
         this.userDetailsService = userDetailsService;
+        this.jwtAuthFilter = jwtAuthFilter;
     }
 
     @Bean
@@ -33,28 +36,21 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .userDetailsService(userDetailsService)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
-                        // ===== RUTAS PÚBLICAS (sin autenticación) =====
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/docs", "/docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/v3/api-docs", "/v3/api-docs/**").permitAll()
 
-                        // ===== RUTAS POR ROL =====
-                        // Médicos: solo MEDICO y ADMIN pueden gestionar
                         .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMIN")
-
-                        // Pacientes: solo MEDICO y ADMIN pueden gestionar
                         .requestMatchers("/api/pacientes/**").hasAnyRole("MEDICO", "ADMIN")
-
-                        // Reportes: MEDICO y ADMIN gestionan; PACIENTE solo puede ver su historial
                         .requestMatchers("/api/reportes/historial/**").hasAnyRole("MEDICO", "ADMIN", "PACIENTE")
                         .requestMatchers("/api/reportes/**").hasAnyRole("MEDICO", "ADMIN")
 
-                        // ===== CUALQUIER OTRA RUTA REQUIERE AUTENTICACIÓN =====
                         .anyRequest().authenticated()
                 )
-                .httpBasic(httpBasic -> {}) // Autenticación HTTP Basic
+                .httpBasic(httpBasic -> {})
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();

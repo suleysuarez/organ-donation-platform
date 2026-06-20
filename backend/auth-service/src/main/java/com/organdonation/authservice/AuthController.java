@@ -2,18 +2,24 @@ package com.organdonation.authservice;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository; // ← agrega esta línea
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
-    public AuthController(AuthService authService, UserRepository userRepository) { // ← modifica el constructor
+    public AuthController(AuthService authService, UserRepository userRepository, JwtUtil jwtUtil) {
         this.authService = authService;
-        this.userRepository = userRepository; // ← agrega esta línea
+        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/register")
@@ -24,8 +30,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login() {
-        String email = org.springframework.security.core.context.SecurityContextHolder
-                .getContext().getAuthentication().getName();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
         User user = userRepository.findAll().stream()
                 .filter(u -> email.equals(u.getEmail()))
@@ -36,6 +41,13 @@ public class AuthController {
             return ResponseEntity.status(401).body("Usuario no encontrado");
         }
 
-        return ResponseEntity.ok("Inicio de sesión exitoso. Rol: " + user.getRole());
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", token);
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
+
+        return ResponseEntity.ok(response);
     }
 }
