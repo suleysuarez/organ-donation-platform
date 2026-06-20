@@ -2,7 +2,9 @@ package com.organdonation.authservice;
 
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -13,13 +15,15 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthController(AuthService authService, UserRepository userRepository, JwtUtil jwtUtil) {
+    public AuthController(AuthService authService,
+                          JwtUtil jwtUtil,
+                          AuthenticationManager authenticationManager) {
         this.authService = authService;
-        this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
     @PostMapping("/register")
@@ -29,24 +33,28 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequestDTO loginRequest) {
+        // Autenticar con el AuthenticationManager de Spring Security
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(),
+                        loginRequest.getPassword()
+                )
+        );
 
-        User user = userRepository.findAll().stream()
-                .filter(u -> email.equals(u.getEmail()))
+        // Si llega aquí, la autenticación fue exitosa
+        String email = authentication.getName();
+        String role = authentication.getAuthorities().stream()
                 .findFirst()
-                .orElse(null);
+                .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
+                .orElse("");
 
-        if (user == null) {
-            return ResponseEntity.status(401).body("Usuario no encontrado");
-        }
-
-        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+        String token = jwtUtil.generateToken(email, role);
 
         Map<String, Object> response = new HashMap<>();
         response.put("token", token);
-        response.put("email", user.getEmail());
-        response.put("role", user.getRole());
+        response.put("email", email);
+        response.put("role", role);
 
         return ResponseEntity.ok(response);
     }

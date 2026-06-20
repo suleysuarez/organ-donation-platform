@@ -42,17 +42,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/docs", "/docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/v3/api-docs", "/v3/api-docs/**").permitAll()
-
                         .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMIN")
                         .requestMatchers("/api/pacientes/**").hasAnyRole("MEDICO", "ADMIN")
                         .requestMatchers("/api/reportes/historial/**").hasAnyRole("MEDICO", "ADMIN", "PACIENTE")
                         .requestMatchers("/api/reportes/**").hasAnyRole("MEDICO", "ADMIN")
-
                         .anyRequest().authenticated()
                 )
-                .httpBasic(httpBasic -> {})
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()));
-
         return http.build();
     }
 }
