@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import logo from '../assets/Logo_UI.png'
 import '../styles/Dashboard.css'
-
 import backgroundImage from '../assets/Background-Register2.png' 
 
 const NAV_ITEMS = [
@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { label: 'Médicos', icon: '👨‍⚕️', path: '/List/medicos' },
   { label: 'Pacientes', icon: '🧑‍🦯', path: '/List/pacientes' },
   { label: 'Reportes Médicos', icon: '📋', path: '/reportes' },
-  { label: 'Donantes y Receptores', icon: '❤️', path: '/donantes' },
+  { label: 'Registros', icon: '❤️', path: '/registros' },
   { label: 'Seguimiento de Donación', icon: '🔍', path: '/seguimiento' },
 ]
 
@@ -39,7 +39,6 @@ function estadoBadgeClass(estado) {
 }
 
 function Dashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -53,18 +52,10 @@ function Dashboard() {
       className="dashboard-layout" 
       style={{ '--bg-image': `url(${backgroundImage})` }}
     >
-
       {/* SIDEBAR */}
-      <aside className={`sidebar ${sidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <aside className="sidebar">
         <div className="sidebar-header">
-          {sidebarOpen && <span className="sidebar-title">OrganDonation</span>}
-          <button
-            className="sidebar-toggle"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            title={sidebarOpen ? 'Cerrar menú' : 'Abrir menú'}
-          >
-            {sidebarOpen ? '◀' : '▶'}
-          </button>
+          <img src={logo} alt="Logo" className="sidebar-logo" />
         </div>
 
         <nav className="sidebar-nav">
@@ -73,25 +64,23 @@ function Dashboard() {
               key={item.path}
               className={`nav-item ${location.pathname === item.path ? 'nav-item-active' : ''}`}
               onClick={() => navigate(item.path)}
-              title={!sidebarOpen ? item.label : ''}
             >
               <span className="nav-icon">{item.icon}</span>
-              {sidebarOpen && <span className="nav-label">{item.label}</span>}
+              <span className="nav-label">{item.label}</span>
             </button>
           ))}
         </nav>
 
         <div className="sidebar-footer">
-          <button className="logout-btn" onClick={handleLogout} title="Cerrar sesión">
+          <button className="logout-btn" onClick={handleLogout}>
             <span className="nav-icon">🚪</span>
-            {sidebarOpen && <span className="nav-label">Cerrar Sesión</span>}
+            <span className="nav-label">Cerrar Sesión</span>
           </button>
         </div>
       </aside>
 
       {/* CONTENIDO PRINCIPAL */}
       <main className="dashboard-main">
-
         <div className="dashboard-header">
           <div className="header-wrapper">
             <div>
@@ -145,7 +134,6 @@ function Dashboard() {
             </tbody>
           </table>
         </div>
-
       </main>
     </div>
   )

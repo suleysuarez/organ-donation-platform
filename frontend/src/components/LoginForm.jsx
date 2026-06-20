@@ -11,7 +11,7 @@ import bg3 from '../assets/Background-Register3.png'
 
 const backgrounds = [bg1, bg2, bg3]
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/auth/login`
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -86,7 +86,7 @@ function LoginForm() {
 
   return (
     <div
-      className="container"
+      className="login-page container"
       style={{ backgroundImage: `url(${backgrounds[currentBgIndex]})` }}
     >
       <form className="form-card" onSubmit={handleSubmit}>

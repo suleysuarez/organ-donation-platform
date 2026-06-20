@@ -3,8 +3,7 @@ import '../styles/ReportesMedicosPage.css'
 
 const MEDICOS_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
 
-// ⚠️ Mock temporal: el backend todavía no tiene endpoint de reportes médicos.
-// Esta pantalla queda lista para conectarse cuando exista /api/reportes.
+
 const REPORTES_MOCK_INICIAL = [
   {
     id: 1,

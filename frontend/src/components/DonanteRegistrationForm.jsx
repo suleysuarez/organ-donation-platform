@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import '../styles/PacienteRegistrationForm.css'
+import '../styles/PacienteRegistrationForm.css' // Usamos el mismo CSS para mantener el diseño idéntico
 
 import logo from '../assets/Logo_UI.png'
 import nameIcon from '../assets/Name.png'
@@ -14,25 +14,25 @@ import bg3 from '../assets/Background-Register3.png'
 const backgrounds = [bg1, bg2, bg3]
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
-const API_URL = `${BASE_URL}/api/receptores` 
+const API_URL = `${BASE_URL}/api/donantes` // Endpoint de donantes
 const MEDICOS_URL = `${BASE_URL}/api/medicos`
 
-function PacienteRegistrationForm() {
+function DonanteRegistrationForm() {
   const [medicos, setMedicos] = useState([])
   const [loadingMedicos, setLoadingMedicos] = useState(true)
   const [registeredById, setRegisteredById] = useState('')
 
-  // Campos de core.recipients
+  // Campos del donante
   const [fullName, setFullName] = useState('')
   const [documentType, setDocumentType] = useState('CC')
   const [documentNumber, setDocumentNumber] = useState('')
   const [birthDate, setBirthDate] = useState('')
   const [sex, setSex] = useState('')
   const [bloodType, setBloodType] = useState('')
-  const [organNeeded, setOrganNeeded] = useState('')
-  const [urgencyLevel, setUrgencyLevel] = useState('MEDIA')
   const [contactPhone, setContactPhone] = useState('')
   const [contactEmail, setContactEmail] = useState('')
+  const [address, setAddress] = useState('')
+  const [medicalNotes, setMedicalNotes] = useState('')
 
   const [errors, setErrors] = useState({})
   const [loading, setLoading] = useState(false)
@@ -40,6 +40,7 @@ function PacienteRegistrationForm() {
   const [serverError, setServerError] = useState('')
   const [currentBgIndex, setCurrentBgIndex] = useState(0)
 
+  // Animación de fondo
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentBgIndex((prev) => (prev + 1) % backgrounds.length)
@@ -47,6 +48,7 @@ function PacienteRegistrationForm() {
     return () => clearInterval(interval)
   }, [])
 
+  // Cargar médicos
   useEffect(() => {
     const fetchMedicos = async () => {
       setLoadingMedicos(true)
@@ -64,7 +66,7 @@ function PacienteRegistrationForm() {
           setMedicos(data.content || [])
         }
       } catch {
-        // Si falla, el select queda vacío; el error saltará al enviar.
+        // Si falla, el select queda vacío
       } finally {
         setLoadingMedicos(false)
       }
@@ -95,10 +97,6 @@ function PacienteRegistrationForm() {
       newErrors.documentNumber = 'La cédula de ciudadanía solo acepta números'
     }
 
-    if (!organNeeded) {
-      newErrors.organNeeded = 'Debe seleccionar el órgano necesario'
-    }
-
     if (contactEmail.trim() && (!contactEmail.includes('@') || !contactEmail.includes('.'))) {
       newErrors.contactEmail = 'Correo de contacto inválido'
     }
@@ -116,10 +114,10 @@ function PacienteRegistrationForm() {
         birthDate: birthDate || null,
         sex: sex || null,
         bloodType: bloodType || null,
-        organNeeded: organNeeded || null,
-        urgencyLevel,
         contactPhone: contactPhone.trim() || null,
         contactEmail: contactEmail.trim() || null,
+        address: address.trim() || null,
+        medicalNotes: medicalNotes.trim() || null,
       }
 
       try {
@@ -134,7 +132,7 @@ function PacienteRegistrationForm() {
         })
 
         if (response.ok || response.status === 201) {
-          setSuccess('¡Paciente registrado con éxito!')
+          setSuccess('¡Donante registrado con éxito!')
           setRegisteredById('')
           setFullName('')
           setDocumentType('CC')
@@ -142,10 +140,10 @@ function PacienteRegistrationForm() {
           setBirthDate('')
           setSex('')
           setBloodType('')
-          setOrganNeeded('')
-          setUrgencyLevel('MEDIA')
           setContactPhone('')
           setContactEmail('')
+          setAddress('')
+          setMedicalNotes('')
         } else {
           const errorData = await response.json().catch(() => null)
           const mensajeError =
@@ -167,11 +165,11 @@ function PacienteRegistrationForm() {
       className="paciente-container"
       style={{ backgroundImage: `url(${backgrounds[currentBgIndex]})` }}
     >
-      <form className="form-card" onSubmit={handleSubmit}>
+      <form className="form-card" onSubmit={handleSubmit} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
 
         <h1 className="main-title">Bienvenido a</h1>
         <img src={logo} alt="Logo" className="logo" />
-        <h2 className="subtitle">Registro de Paciente</h2>
+        <h2 className="subtitle">Registro de Donante</h2>
 
         {loading && <p className="success-message">Registrando...</p>}
         {success && <p className="success-message">{success}</p>}
@@ -203,7 +201,7 @@ function PacienteRegistrationForm() {
 
         {/* full_name */}
         <div className="input-group">
-          <label>Nombre Completo</label>
+          <label>Nombre Completo <span style={{ color: '#d92d20' }}>*</span></label>
           <div className="input-with-icon">
             <img src={nameIcon} alt="Nombre" className="inner-icon" />
             <input
@@ -237,7 +235,7 @@ function PacienteRegistrationForm() {
 
         {/* document_number */}
         <div className="input-group">
-          <label>Número de Documento</label>
+          <label>Número de Documento <span style={{ color: '#d92d20' }}>*</span></label>
           <div className="input-with-icon">
             <img src={documentIcon} alt="Número doc" className="inner-icon" />
             <input
@@ -307,49 +305,6 @@ function PacienteRegistrationForm() {
           <p className="error"></p>
         </div>
 
-        {/* organ_needed */}
-        <div className="input-group">
-          <label>Órgano Necesario <span style={{ color: '#d92d20' }}>*</span></label>
-          <div className="input-with-icon">
-            <select
-              value={organNeeded}
-              onChange={(e) => setOrganNeeded(e.target.value)}
-              className="select-custom"
-              style={{ paddingLeft: '16px' }}
-            >
-              <option value="">Seleccionar...</option>
-              <option value="RINON">Riñón</option>
-              <option value="HIGADO">Hígado</option>
-              <option value="CORAZON">Corazón</option>
-              <option value="PULMON">Pulmón</option>
-              <option value="PANCREAS">Páncreas</option>
-              <option value="CORNEA">Córnea</option>
-              <option value="INTESTINO">Intestino</option>
-              <option value="TEJIDO">Tejido</option>
-            </select>
-          </div>
-          <p className="error">{errors.organNeeded || ''}</p>
-        </div>
-
-        {/* urgency_level */}
-        <div className="input-group">
-          <label>Nivel de Urgencia</label>
-          <div className="input-with-icon">
-            <select
-              value={urgencyLevel}
-              onChange={(e) => setUrgencyLevel(e.target.value)}
-              className="select-custom"
-              style={{ paddingLeft: '16px' }}
-            >
-              <option value="BAJA">🟢 Baja</option>
-              <option value="MEDIA">🟡 Media</option>
-              <option value="ALTA">🟠 Alta</option>
-              <option value="CRITICA">🔴 Crítica</option>
-            </select>
-          </div>
-          <p className="error"></p>
-        </div>
-
         {/* contact_phone */}
         <div className="input-group">
           <label>Teléfono de Contacto</label>
@@ -374,14 +329,45 @@ function PacienteRegistrationForm() {
               type="text"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
-              placeholder="Correo de contacto del paciente"
+              placeholder="Correo de contacto del donante"
             />
           </div>
           <p className="error">{errors.contactEmail || ''}</p>
         </div>
 
-        <button className="button-register" type="submit" disabled={loading}>
-          {loading ? 'Procesando...' : 'Registrar Paciente'}
+        {/* address */}
+        <div className="input-group">
+          <label>Dirección</label>
+          <div className="input-with-icon">
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="Dirección de residencia"
+              style={{ paddingLeft: '16px' }}
+            />
+          </div>
+          <p className="error"></p>
+        </div>
+
+        {/* medical_notes */}
+        <div className="input-group">
+          <label>Notas Médicas</label>
+          <div className="input-with-icon">
+            <textarea
+              className="select-custom" // Reutilizamos esta clase para mantener el estilo del borde y padding
+              rows={3}
+              value={medicalNotes}
+              onChange={(e) => setMedicalNotes(e.target.value)}
+              placeholder="Observaciones clínicas (opcional)"
+              style={{ paddingLeft: '16px', height: 'auto', paddingTop: '10px', resize: 'vertical' }}
+            />
+          </div>
+          <p className="error"></p>
+        </div>
+
+        <button className="button-register" type="submit" disabled={loading} style={{ marginTop: '16px' }}>
+          {loading ? 'Procesando...' : 'Registrar Donante'}
         </button>
 
       </form>
@@ -389,4 +375,4 @@ function PacienteRegistrationForm() {
   )
 }
 
-export default PacienteRegistrationForm
+export default DonanteRegistrationForm

@@ -6,8 +6,8 @@ import MedicosListPage from './components/MedicosListPage'
 import MedicoDetailPage from './components/MedicoDetailPage'
 import PacientesListPage from './components/PacientesListPage'
 import PacienteRegistrationForm from './components/PacienteRegistrationForm'
-import DonorRegistrationForm from './components/DonorRegistrationForm'
-import DonantesReceptoresPage from './components/DonantesReceptoresPage'
+import RegistrosPage from './components/RegistrosPage' 
+import DonanteRegistrationForm from './components/DonanteRegistrationForm' 
 import ReportesMedicosPage from './components/ReportesMedicosPage'
 import SeguimientoDonacion from './components/SeguimientoDonacion'
 import Dashboard from './components/Dashboard'
@@ -21,13 +21,16 @@ function App() {
         <Route path="/register-user" element={<RegistrationForm />} />
         <Route path="/register-medic" element={<MedRegistrationForm />} />
         <Route path="/register-paciente" element={<PacienteRegistrationForm />} />
-        <Route path="/register-donante" element={<DonorRegistrationForm />} />
+        <Route path="/register-donante" element={<DonanteRegistrationForm />} />
 
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/List/medicos" element={<MedicosListPage />} />
         <Route path="/List/medicos/:id" element={<MedicoDetailPage />} />
         <Route path="/List/pacientes" element={<PacientesListPage />} />
-        <Route path="/donantes" element={<DonantesReceptoresPage />} />
+        
+        {/* Cambiado oficialmente a /registros */}
+        <Route path="/registros" element={<RegistrosPage />} /> 
+        
         <Route path="/reportes" element={<ReportesMedicosPage />} />
         <Route path="/seguimiento" element={<SeguimientoDonacion />} />
       </Routes>
