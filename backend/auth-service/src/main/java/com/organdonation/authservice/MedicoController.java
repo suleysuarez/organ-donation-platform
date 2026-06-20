@@ -3,6 +3,8 @@ package com.organdonation.authservice;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 public class MedicoController {
 
     private final UserRepository userRepository;
+    private final MedicoService medicoService;
 
-    public MedicoController(UserRepository userRepository) {
+    public MedicoController(UserRepository userRepository, MedicoService medicoService) {
         this.userRepository = userRepository;
+        this.medicoService = medicoService;
     }
 
     @GetMapping("/medicos")
@@ -25,12 +29,10 @@ public class MedicoController {
             @RequestParam(required = false) String ciudad,
             @RequestParam(required = false) String estadoValidacion) {
 
-        // Base: rol médico
         Specification<User> spec = Specification.where(
                 (root, query, cb) -> cb.equal(root.get("role"), "MEDICO")
         );
 
-        // Filtro por nombre (en firstName o lastName)
         if (nombre != null && !nombre.isEmpty()) {
             spec = spec.and((root, query, cb) -> cb.or(
                     cb.like(cb.lower(root.get("firstName")), "%" + nombre.toLowerCase() + "%"),
@@ -38,25 +40,21 @@ public class MedicoController {
             ));
         }
 
-        // Filtro por documento (DNI)
         if (documento != null && !documento.isEmpty()) {
             spec = spec.and((root, query, cb) ->
                     cb.like(root.get("dni"), "%" + documento + "%"));
         }
 
-        // Filtro por especialidad
         if (especialidad != null && !especialidad.isEmpty()) {
             spec = spec.and((root, query, cb) ->
                     cb.like(cb.lower(root.get("specialty")), "%" + especialidad.toLowerCase() + "%"));
         }
 
-        // Filtro por ciudad
         if (ciudad != null && !ciudad.isEmpty()) {
             spec = spec.and((root, query, cb) ->
                     cb.like(cb.lower(root.get("city")), "%" + ciudad.toLowerCase() + "%"));
         }
 
-        // Filtro por estado de validación
         if (estadoValidacion != null && !estadoValidacion.isEmpty()) {
             ValidationStatus status = ValidationStatus.fromString(estadoValidacion);
             spec = spec.and((root, query, cb) ->
@@ -82,8 +80,9 @@ public class MedicoController {
         }
         return ResponseEntity.ok(new UserDto(medico));
     }
+
     /** Sube el certificado de un médico y lo asocia a su perfil. */
-    @PostMapping("/{id}/certificado")
+    @PostMapping("/medicos/{id}/certificado")
     public ResponseEntity<FileUploadResponseDTO> subirCertificado(
             @PathVariable Long id,
             @RequestParam("archivo") MultipartFile archivo) {
