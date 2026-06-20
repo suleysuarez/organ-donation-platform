@@ -82,4 +82,12 @@ public class MedicoController {
         }
         return ResponseEntity.ok(new UserDto(medico));
     }
+    /** Sube el certificado de un médico y lo asocia a su perfil. */
+    @PostMapping("/{id}/certificado")
+    public ResponseEntity<FileUploadResponseDTO> subirCertificado(
+            @PathVariable Long id,
+            @RequestParam("archivo") MultipartFile archivo) {
+        FileUploadResponseDTO response = medicoService.subirCertificado(id, archivo);
+        return ResponseEntity.status(201).body(response);
+    }
 }
