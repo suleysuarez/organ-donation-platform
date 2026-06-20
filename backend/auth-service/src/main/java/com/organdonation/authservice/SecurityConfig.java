@@ -34,18 +34,24 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
-                        // Rutas públicas (sin autenticación)
+                        // ===== RUTAS PÚBLICAS (sin autenticación) =====
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers("/docs", "/docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/v3/api-docs", "/v3/api-docs/**").permitAll()
 
-                        // Rutas por rol
+                        // ===== RUTAS POR ROL =====
+                        // Médicos: solo MEDICO y ADMIN pueden gestionar
                         .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMIN")
+
+                        // Pacientes: solo MEDICO y ADMIN pueden gestionar
                         .requestMatchers("/api/pacientes/**").hasAnyRole("MEDICO", "ADMIN")
+
+                        // Reportes: MEDICO y ADMIN gestionan; PACIENTE solo puede ver su historial
+                        .requestMatchers("/api/reportes/historial/**").hasAnyRole("MEDICO", "ADMIN", "PACIENTE")
                         .requestMatchers("/api/reportes/**").hasAnyRole("MEDICO", "ADMIN")
 
-                        // Cualquier otra ruta requiere autenticación
+                        // ===== CUALQUIER OTRA RUTA REQUIERE AUTENTICACIÓN =====
                         .anyRequest().authenticated()
                 )
                 .httpBasic(httpBasic -> {}) // Autenticación HTTP Basic
