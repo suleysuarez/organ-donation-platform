@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/MedicosListPage.css'
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
@@ -20,6 +21,8 @@ function getStatusLabel(status) {
 }
 
 function MedicosListPage() {
+  const navigate = useNavigate()
+
   const [medicos, setMedicos] = useState([])
   const [loading, setLoading] = useState(true)
   const [serverError, setServerError] = useState('')
@@ -148,6 +151,15 @@ function MedicosListPage() {
                   <span className={`badge ${medico.isActive ? 'badge-active' : 'badge-inactive'}`}>
                     {medico.isActive ? 'Activo' : 'Inactivo'}
                   </span>
+                </div>
+
+                <div className="card-actions">
+                  <button
+                    className="btn-detail"
+                    onClick={() => navigate(`/List/medicos/${medico.id}`)}
+                  >
+                    Ver Detalle →
+                  </button>
                 </div>
               </div>
             ))}
