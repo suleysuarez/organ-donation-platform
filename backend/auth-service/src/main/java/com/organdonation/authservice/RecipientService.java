@@ -1,5 +1,7 @@
 package com.organdonation.authservice;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -7,9 +9,10 @@ import org.springframework.stereotype.Service;
  *
  * <p>Responsabilidades:
  * <ul>
- *   <li>Validar que el documento no esté registrado</li>
- *   <li>Buscar el médico registrador por id</li>
- *   <li>Persistir el nuevo receptor</li>
+ * <li>Validar que el documento no esté registrado</li>
+ * <li>Buscar el médico registrador por id</li>
+ * <li>Persistir el nuevo receptor</li>
+ * <li>Listar receptores con paginación y búsqueda</li>
  * </ul>
  *
  * @author Ceamerap
@@ -25,6 +28,19 @@ public class RecipientService {
                             UserRepository userRepository) {
         this.recipientRepository = recipientRepository;
         this.userRepository = userRepository;
+    }
+
+    /**
+     * Lista los receptores de forma paginada con filtro opcional.
+     */
+    public Page<RecipientResponseDTO> listar(String q, Pageable pageable) {
+        Page<Recipient> page;
+        if (q == null || q.isBlank()) {
+            page = recipientRepository.findAll(pageable);
+        } else {
+            page = recipientRepository.buscar(q.trim(), pageable);
+        }
+        return page.map(RecipientResponseDTO::from);
     }
 
     /**

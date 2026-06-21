@@ -86,7 +86,7 @@ function LoginForm() {
 
   return (
     <div
-      className="container"
+      className="login-page container"
       style={{ backgroundImage: `url(${backgrounds[currentBgIndex]})` }}
     >
       <form className="form-card" onSubmit={handleSubmit}>

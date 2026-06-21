@@ -1,29 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import '../styles/MedicosListPage.css'
+import '../styles/PacientesListPage.css'
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/receptores`
+const PAGE_SIZE = 6
 
-function getStatusStyle(status) {
-  switch (status) {
-    case 'VERIFICADO':  return 'badge badge-verified'
-    case 'RECHAZADO':   return 'badge badge-rejected'
-    default:            return 'badge badge-pending'
-  }
-}
-
-function getStatusLabel(status) {
-  switch (status) {
-    case 'VERIFICADO': return 'Verificado'
-    case 'RECHAZADO':  return 'Rechazado'
-    default:           return 'Pendiente'
-  }
-}
-
-function MedicosListPage() {
-  const navigate = useNavigate()
-
-  const [medicos, setMedicos] = useState([])
+function PacientesListPage() {
+  const [pacientes, setPacientes] = useState([])
   const [loading, setLoading] = useState(true)
   const [serverError, setServerError] = useState('')
   const [search, setSearch] = useState('')
@@ -31,13 +13,11 @@ function MedicosListPage() {
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
 
-  const PAGE_SIZE = 9
-
   useEffect(() => {
-    fetchMedicos()
+    fetchPacientes()
   }, [page, search])
 
-  const fetchMedicos = async () => {
+  const fetchPacientes = async () => {
     setLoading(true)
     setServerError('')
 
@@ -50,25 +30,23 @@ function MedicosListPage() {
       if (search.trim()) params.append('q', search.trim())
 
       const token = localStorage.getItem('token')
-      
       const response = await fetch(`${API_URL}?${params}`, {
+        method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         }
       })
 
       if (response.ok) {
         const data = await response.json()
-        setMedicos(data.content)
-        setTotalPages(data.totalPages)
-      } else if (response.status === 403) {
-        setServerError('No tienes permisos para ver esta información.')
+        setPacientes(data.content || [])
+        setTotalPages(data.totalPages || 0)
       } else {
-        setServerError('Error al cargar los médicos.')
+        setServerError('Error al cargar la lista de pacientes.')
       }
     } catch (error) {
-      setServerError('No se pudo conectar con el servidor.')
+      setServerError('No se pudo conectar con el servidor. Verifica si el backend está encendido.')
     } finally {
       setLoading(false)
     }
@@ -89,8 +67,10 @@ function MedicosListPage() {
   return (
     <div className="list-container">
       <div className="list-header">
-        <h1>Médicos Registrados</h1>
-        <p className="list-subtitle">Gestiona y visualiza los profesionales de salud registrados en el sistema</p>
+        <h1>Pacientes Registrados</h1>
+        <p className="list-subtitle">
+          Consulta y gestiona los pacientes receptores registrados en el sistema
+        </p>
       </div>
 
       <form className="search-bar" onSubmit={handleSearch}>
@@ -101,7 +81,9 @@ function MedicosListPage() {
           placeholder="Buscar por nombre o número de documento..."
           className="search-input"
         />
-        <button type="submit" className="btn-search">Buscar</button>
+        <button type="submit" className="btn-search">
+          Buscar
+        </button>
         {search && (
           <button type="button" className="btn-clear" onClick={handleClear}>
             Limpiar
@@ -112,63 +94,70 @@ function MedicosListPage() {
       {serverError && <p className="list-error">{serverError}</p>}
 
       {loading ? (
-        <p className="list-loading">Cargando médicos...</p>
-      ) : medicos.length === 0 ? (
+        <p className="list-loading">Cargando pacientes...</p>
+      ) : pacientes.length === 0 ? (
         <p className="list-empty">
-          {search ? `No se encontraron médicos para "${search}".` : 'No hay médicos registrados aún.'}
+          {search
+            ? `No se encontraron pacientes para "${search}".`
+            : 'No hay pacientes registrados aún.'}
         </p>
       ) : (
         <>
           <div className="cards-grid">
-            {medicos.map((medico) => (
-              <div className="medico-card" key={medico.id}>
+            {pacientes.map((paciente) => (
+              <div className="paciente-card" key={paciente.id}>
                 <div className="card-header">
                   <div className="card-avatar">
-                    {medico.fullName.charAt(0).toUpperCase()}
+                    {paciente.fullName ? paciente.fullName.charAt(0).toUpperCase() : 'P'}
                   </div>
                   <div>
-                    <h3 className="card-name">{medico.fullName}</h3>
-                    <p className="card-profile">{medico.professionalProfile || 'Sin especialidad'}</p>
+                    <h3 className="card-name">{paciente.fullName}</h3>
+                    <p className="card-role">Receptor</p>
                   </div>
                 </div>
 
                 <div className="card-body">
                   <div className="card-field">
                     <span className="field-label">Correo</span>
-                    <span className="field-value">{medico.email}</span>
+                    <span className="field-value">{paciente.contactEmail || 'No registrado'}</span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Documento</span>
-                    <span className="field-value">{medico.documentType} — {medico.documentNumber}</span>
+                    <span className="field-value">
+                      {paciente.documentType} — {paciente.documentNumber}
+                    </span>
                   </div>
                   <div className="card-field">
-                    <span className="field-label">RETHUS</span>
-                    <span className="field-value">{medico.rethusRegistrationNumber || 'No registrado'}</span>
+                    <span className="field-label">Teléfono</span>
+                    <span className="field-value">
+                      {paciente.contactPhone || 'No registrado'}
+                    </span>
+                  </div>
+                  <div className="card-field">
+                    <span className="field-label">Tipo de Sangre</span>
+                    <span className="field-value">
+                      {paciente.bloodType ? paciente.bloodType.replace('_POS', '+').replace('_NEG', '-') : 'No registrado'}
+                    </span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Registro</span>
                     <span className="field-value">
-                      {medico.createdAt ? new Date(medico.createdAt).toLocaleDateString('es-CO') : '—'}
+                      {paciente.createdAt
+                        ? new Date(paciente.createdAt).toLocaleDateString('es-CO')
+                        : '—'}
                     </span>
                   </div>
                 </div>
 
                 <div className="card-footer">
-                  <span className={getStatusStyle(medico.verificationStatus)}>
-                    {getStatusLabel(medico.verificationStatus)}
-                  </span>
-                  <span className={`badge ${medico.isActive ? 'badge-active' : 'badge-inactive'}`}>
-                    {medico.isActive ? 'Activo' : 'Inactivo'}
-                  </span>
-                </div>
-
-                <div className="card-actions">
-                  <button
-                    className="btn-detail"
-                    onClick={() => navigate(`/List/medicos/${medico.id}`)}
+                  <span className="badge badge-paciente">Paciente</span>
+                  <span
+                    className={`badge ${
+                      paciente.isActive !== false ? 'badge-active' : 'badge-inactive'
+                    }`}
                   >
-                    Ver Detalle →
-                  </button>
+                    {paciente.isActive !== false ? 'Activo' : 'Inactivo'}
+                  </span>
                 </div>
               </div>
             ))}
@@ -182,7 +171,9 @@ function MedicosListPage() {
             >
               ← Anterior
             </button>
-            <span className="page-info">Página {page + 1} de {totalPages}</span>
+            <span className="page-info">
+              Página {page + 1} de {totalPages}
+            </span>
             <button
               className="btn-page"
               onClick={() => setPage((p) => p + 1)}
@@ -197,4 +188,4 @@ function MedicosListPage() {
   )
 }
 
-export default MedicosListPage
+export default PacientesListPage

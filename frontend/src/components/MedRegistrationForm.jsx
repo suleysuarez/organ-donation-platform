@@ -41,7 +41,6 @@ function MedRegistrationForm() {
     return () => clearInterval(interval)
   }, [])
 
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSuccess('')
@@ -78,7 +77,6 @@ function MedRegistrationForm() {
     if (Object.keys(newErrors).length === 0) {
       setLoading(true)
 
-     
       const requestData = {
         fullName: fullName.trim(),
         documentType: documentType,
@@ -90,7 +88,6 @@ function MedRegistrationForm() {
       }
 
       try {
-       
         const response = await fetch(API_URL, {
           method: 'POST',
           headers: {
@@ -99,7 +96,6 @@ function MedRegistrationForm() {
           body: JSON.stringify(requestData)
         })
 
-       
         if (response.ok || response.status === 201) {
           setSuccess('¡Médico registrado con éxito!')
 
@@ -111,7 +107,6 @@ function MedRegistrationForm() {
           setEmail('')
           setPassword('')
         } else {
-         
           const errorData = await response.json().catch(() => null)
           const mensajeError = errorData?.error
             || (Array.isArray(errorData?.errores) ? errorData.errores.join(', ') : null)
@@ -119,7 +114,6 @@ function MedRegistrationForm() {
           setServerError(mensajeError)
         }
       } catch (error) {
-
         setServerError('No se pudo conectar con el servidor. Verifica si el backend está encendido.')
       } finally {
         setLoading(false)
@@ -128,8 +122,9 @@ function MedRegistrationForm() {
   }
 
   return (
+    /* Encapsulado aquí con la clase raíz específica para evitar conflictos */
     <div 
-      className="container"
+      className="register-medic-page container"
       style={{ backgroundImage: `url(${backgrounds[currentBgIndex]})` }}
     >
       <form className="form-card" onSubmit={handleSubmit}>
@@ -270,4 +265,4 @@ function MedRegistrationForm() {
   )
 }
 
-export default MedRegistrationForm; 
+export default MedRegistrationForm

@@ -50,7 +50,7 @@ function RegistrationForm() {
         nombre: nombre.trim(),
         email: email.trim(),
         password: password,
-        role: 'PACIENTE'
+        role: 'RECEPTOR'
       }
 
       try {

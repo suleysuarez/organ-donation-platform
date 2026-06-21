@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
 
-.container {
+
+.login-page {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -13,7 +14,7 @@
   transition: background-image 1.2s ease-in-out;
 }
 
-.form-card {
+.login-page .form-card {
   width: 440px;
   max-height: 95vh;
   padding: 40px 35px;
@@ -24,7 +25,7 @@
   flex-direction: column;
 }
 
-.form-card h1 {
+.login-page .form-card h1 {
   text-align: center;
   color: #0c2a46;
   margin-bottom: 5px;
@@ -32,7 +33,7 @@
   font-size: 24px;
 }
 
-.subtitle {
+.login-page .subtitle {
   color: #667085;
   text-align: center;
   font-family: 'Nunito Sans', sans-serif;
@@ -43,17 +44,17 @@
   margin-bottom: -45px;
 }
 
-.logo {
+.login-page .logo {
   margin-top: -50px;
   width: 400px;
   margin-left: -11px;
 }
 
-.input-group {
+.login-page .input-group {
   margin-bottom: 12px;
 }
 
-.input-group label {
+.login-page .input-group label {
   font-family: 'Nunito Sans', sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -62,12 +63,12 @@
   display: block;
 }
 
-.input-with-icon {
+.login-page .input-with-icon {
   position: relative;
   width: 100%;
 }
 
-.inner-icon {
+.login-page .inner-icon {
   position: absolute;
   left: 14px;
   top: 30%;
@@ -77,7 +78,7 @@
   opacity: 0.5;
 }
 
-.input-group input {
+.login-page .input-group input {
   width: 100%;
   height: 48px;
   padding: 0 16px 0 42px;
@@ -90,12 +91,12 @@
   transition: border-color 0.2s;
 }
 
-.input-group input:focus {
+.login-page .input-group input:focus {
   outline: none;
   border-color: #008b9b;
 }
 
-.button-register {
+.login-page .button-register {
   width: 100%;
   height: 48px;
   margin-top: 15px;
@@ -110,16 +111,16 @@
   transition: background-color 0.2s;
 }
 
-.button-register:hover {
+.login-page .button-register:hover {
   background-color: #007684;
 }
 
-.button-register:disabled {
+.login-page .button-register:disabled {
   background-color: #a5d3d8;
   cursor: not-allowed;
 }
 
-.error {
+.login-page .error {
   color: #d92d20;
   font-family: 'Nunito Sans', sans-serif;
   font-size: 13px;
@@ -128,7 +129,7 @@
   display: block;
 }
 
-.error-server {
+.login-page .error-server {
   color: #d92d20;
   font-family: 'Nunito Sans', sans-serif;
   font-size: 13px;
@@ -136,7 +137,7 @@
   margin-bottom: 10px;
 }
 
-.success-message {
+.login-page .success-message {
   color: #039855;
   text-align: center;
   font-family: 'Nunito Sans', sans-serif;
@@ -144,7 +145,7 @@
   margin-bottom: 15px;
 }
 
-.register-links {
+.login-page .register-links {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -155,7 +156,7 @@
   box-sizing: border-box;
 }
 
-.register-links p {
+.login-page .register-links p {
   font-family: 'Nunito Sans', sans-serif;
   font-size: 11px;
   color: #667085;
@@ -165,7 +166,7 @@
   white-space: nowrap;
 }
 
-.link-register {
+.login-page .link-register {
   font-family: 'Nunito Sans', sans-serif;
   font-size: 11px;
   font-weight: 600;
@@ -176,12 +177,12 @@
   white-space: nowrap;
 }
 
-.link-register:hover {
+.login-page .link-register:hover {
   color: #007684;
   text-decoration: underline;
 }
 
-.link-separator {
+.login-page .link-separator {
   font-family: 'Nunito Sans', sans-serif;
   font-size: 11px;
   color: #d0d5dd;
