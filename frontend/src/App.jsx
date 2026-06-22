@@ -6,6 +6,7 @@ import MedicoDetailPage from './components/MedicoDetailPage'
 import DonantesListPage from './components/DonantesListPage'
 import PacientesListPage from './components/PacientesListPage'
 import PacienteRegistrationForm from './components/PacienteRegistrationForm'
+import PacienteEditForm from './components/PacienteEditForm'
 import RegistrosPage from './components/RegistrosPage' 
 import DonanteRegistrationForm from './components/DonanteRegistrationForm' 
 import ReportesMedicosPage from './components/ReportesMedicosPage'
@@ -31,7 +32,8 @@ function App() {
         <Route path="/List/medicos/:id" element={<ProtectedRoute><MedicoDetailPage /></ProtectedRoute>} />
         <Route path="/List/donantes" element={<ProtectedRoute><DonantesListPage /></ProtectedRoute>} />
         <Route path="/List/pacientes" element={<ProtectedRoute><PacientesListPage /></ProtectedRoute>} />
-        
+        <Route path="/List/pacientes/:id/editar" element={<ProtectedRoute><PacienteEditForm /></ProtectedRoute>} />
+
         {/* Cambiado oficialmente a /registros */}
         <Route path="/registros" element={<ProtectedRoute><RegistrosPage /></ProtectedRoute>} /> 
         

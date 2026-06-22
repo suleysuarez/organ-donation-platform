@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import PageModuleHeader from './PageModuleHeader'
 import rethusImage from '../assets/Rethus.png'
+import bgSeguimiento from '../assets/Background-Seg.png'
 import '../styles/SeguimientoDonacion.css'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -294,18 +295,22 @@ function SeguimientoDonacion() {
   }
 
   return (
-    <div className="seguimiento-container">
-      <PageModuleHeader
-        image={rethusImage}
-        title="Seguimiento de Donacion"
-        subtitle="Consulta procesos de donacion existentes o abre uno nuevo"
-      />
-      <div className="list-header">
-        <h1>Seguimiento de Donación</h1>
-        <p className="list-subtitle">
-          Consulta procesos de donación existentes o abre uno nuevo
-        </p>
-      </div>
+    <div
+      className="seguimiento-page-wrapper"
+      style={{ backgroundImage: `url(${bgSeguimiento})` }}
+    >
+      <div className="seguimiento-container">
+        <PageModuleHeader
+          image={rethusImage}
+          title="Seguimiento de Donacion"
+          subtitle="Consulta procesos de donacion existentes o abre uno nuevo"
+        />
+        <div className="list-header">
+          <h1>Seguimiento de Donación</h1>
+          <p className="list-subtitle">
+            Consulta procesos de donación existentes o abre uno nuevo
+          </p>
+        </div>
 
       {/* Buscador */}
       <form className="search-bar" onSubmit={handleSearch}>
@@ -552,6 +557,7 @@ function SeguimientoDonacion() {
           </form>
         </div>
       )}
+    </div>
     </div>
   )
 }

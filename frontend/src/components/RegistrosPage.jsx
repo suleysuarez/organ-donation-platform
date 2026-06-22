@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageModuleHeader from './PageModuleHeader'
 import documentImage from '../assets/Document.png'
+import bgRegistros from '../assets/Background-RP.png'
 import '../styles/DonantesReceptoresPage.css'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -18,64 +19,69 @@ function RegistrosPage() {
   const [tab, setTab] = useState('donante') // 'donante' | 'receptor' | 'consultar'
 
   return (
-    <div className="dr-container">
-      <PageModuleHeader
-        image={documentImage}
-        title="Panel de Registros y Consultas"
-        subtitle="Selecciona una opcion para registrar o consultar en el sistema"
-      />
-      <div className="list-header">
-        <h1>Panel de Registros y Consultas</h1>
-        <p className="list-subtitle">Selecciona una opción para registrar o consultar en el sistema</p>
-      </div>
+    <div
+      className="dr-page-wrapper"
+      style={{ backgroundImage: `url(${bgRegistros})` }}
+    >
+      <div className="dr-container">
+        <PageModuleHeader
+          image={documentImage}
+          title="Panel de Registros y Consultas"
+          subtitle="Selecciona una opcion para registrar o consultar en el sistema"
+        />
+        <div className="list-header">
+          <h1>Panel de Registros y Consultas</h1>
+          <p className="list-subtitle">Selecciona una opción para registrar o consultar en el sistema</p>
+        </div>
 
-      <div className="dr-tabs">
-        <button 
-          className={`dr-tab ${tab === 'donante' ? 'dr-tab-active' : ''}`} 
-          onClick={() => setTab('donante')}
-        >
-          ❤️ Nuevo Donante
-        </button>
-        <button 
-          className={`dr-tab ${tab === 'receptor' ? 'dr-tab-active' : ''}`} 
-          onClick={() => setTab('receptor')}
-        >
-          🧑‍🦯 Nuevo Receptor
-        </button>
-        <button 
-          className={`dr-tab ${tab === 'consultar' ? 'dr-tab-active' : ''}`} 
-          onClick={() => setTab('consultar')}
-        >
-          🔍 Consultar por ID
-        </button>
-      </div>
-
-      {/* Apartado para redirigir al registro de donantes */}
-      {tab === 'donante' && (
-        <div className="section-card" style={{ textAlign: 'center', padding: '40px' }}>
-          <p style={{ marginBottom: '16px', color: 'var(--color-text-secondary, #667085)' }}>
-            El registro de donantes se realiza desde su formulario interactivo dedicado.
-          </p>
-          <button className="btn-submit" onClick={() => navigate('/register-donante')}>
-            Ir a Registrar Donante
+        <div className="dr-tabs">
+          <button 
+            className={`dr-tab ${tab === 'donante' ? 'dr-tab-active' : ''}`} 
+            onClick={() => setTab('donante')}
+          >
+            ❤️ Nuevo Donante
+          </button>
+          <button 
+            className={`dr-tab ${tab === 'receptor' ? 'dr-tab-active' : ''}`} 
+            onClick={() => setTab('receptor')}
+          >
+            🧑‍🦯 Nuevo Receptor
+          </button>
+          <button 
+            className={`dr-tab ${tab === 'consultar' ? 'dr-tab-active' : ''}`} 
+            onClick={() => setTab('consultar')}
+          >
+            🔍 Consultar por ID
           </button>
         </div>
-      )}
 
-      {/* Apartado para redirigir al registro de receptores/pacientes */}
-      {tab === 'receptor' && (
-        <div className="section-card" style={{ textAlign: 'center', padding: '40px' }}>
-          <p style={{ marginBottom: '16px', color: 'var(--color-text-secondary, #667085)' }}>
-            El registro de receptores se gestiona desde la sección de Pacientes.
-          </p>
-          <button className="btn-submit" onClick={() => navigate('/register-paciente')}>
-            Ir a Registrar Receptor
-          </button>
-        </div>
-      )}
+        {/* Apartado para redirigir al registro de donantes */}
+        {tab === 'donante' && (
+          <div className="section-card" style={{ textAlign: 'center', padding: '40px' }}>
+            <p style={{ marginBottom: '16px', color: 'var(--color-text-secondary, #667085)' }}>
+              El registro de donantes se realiza desde su formulario interactivo dedicado.
+            </p>
+            <button className="btn-submit" onClick={() => navigate('/register-donante')}>
+              Ir a Registrar Donante
+            </button>
+          </div>
+        )}
 
-      {/* Apartado de consultas (se mantiene en la misma vista) */}
-      {tab === 'consultar' && <ConsultaPorId />}
+        {/* Apartado para redirigir al registro de receptores/pacientes */}
+        {tab === 'receptor' && (
+          <div className="section-card" style={{ textAlign: 'center', padding: '40px' }}>
+            <p style={{ marginBottom: '16px', color: 'var(--color-text-secondary, #667085)' }}>
+              El registro de receptores se gestiona desde la sección de Pacientes.
+            </p>
+            <button className="btn-submit" onClick={() => navigate('/register-paciente')}>
+              Ir a Registrar Receptor
+            </button>
+          </div>
+        )}
+
+        {/* Apartado de consultas (se mantiene en la misma vista) */}
+        {tab === 'consultar' && <ConsultaPorId />}
+      </div>
     </div>
   )
 }

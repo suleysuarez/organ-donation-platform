@@ -1,11 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
 
+/* ── Wrapper pantalla completa ── */
+.medicos-page-wrapper {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .list-container {
   min-height: 100vh;
-  background-color: #ffffff;
   padding: 40px 5%;
   box-sizing: border-box;
   font-family: 'Nunito Sans', sans-serif;
+  background: transparent;
 }
 
 /* Header */
@@ -109,8 +118,10 @@
   margin-bottom: 30px;
 }
 
-/* Card */
+/* ── Card con patrón decorativo ── */
 .medico-card {
+  position: relative;
+  overflow: hidden;
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.06);
@@ -123,6 +134,22 @@
 
 .medico-card:hover {
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen decorativa en esquina inferior derecha */
+.medico-card::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  right: -16px;
+  width: 100px;
+  height: 100px;
+  background-image: var(--card-bg-image);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  opacity: 0.06;
+  pointer-events: none;
 }
 
 /* Header de la card */
@@ -157,6 +184,18 @@
   font-size: 12px;
   color: #667085;
   margin: 0;
+}
+
+.card-id-badge {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #008b9b;
+  background: #e6f6f8;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 /* Body de la card */
@@ -194,7 +233,7 @@
   padding-top: 14px;
 }
 
-/* Acción "Ver Detalle" — agregado para MedicoDetailPage */
+/* Acción Ver Detalle */
 .card-actions {
   display: flex;
   justify-content: flex-end;

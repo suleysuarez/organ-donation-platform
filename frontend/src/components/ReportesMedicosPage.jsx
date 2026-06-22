@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import PageModuleHeader from './PageModuleHeader'
 import documentImage from '../assets/Document.png'
+import bgReportes from '../assets/Background-Donantes.png'
 import '../styles/ReportesMedicosPage.css'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -218,16 +219,20 @@ function ReportesMedicosPage() {
   }
 
   return (
-    <div className="reportes-container">
-      <PageModuleHeader
-        image={documentImage}
-        title="Reportes Medicos"
-        subtitle="Gestiona reportes clinicos reales asociados a receptores y medicos."
-      />
-      <div className="list-header">
-        <h1>Reportes Medicos</h1>
-        <p className="list-subtitle">Gestiona reportes clinicos reales asociados a receptores y medicos.</p>
-      </div>
+    <div
+      className="reportes-page-wrapper"
+      style={{ backgroundImage: `url(${bgReportes})` }}
+    >
+      <div className="reportes-container">
+        <PageModuleHeader
+          image={documentImage}
+          title="Reportes Medicos"
+          subtitle="Gestiona reportes clinicos reales asociados a receptores y medicos."
+        />
+        <div className="list-header">
+          <h1>Reportes Medicos</h1>
+          <p className="list-subtitle">Gestiona reportes clinicos reales asociados a receptores y medicos.</p>
+        </div>
 
       <div className="reportes-toolbar">
         <button className="btn-submit" onClick={handleNuevo}>+ Nuevo Reporte</button>
@@ -378,6 +383,7 @@ function ReportesMedicosPage() {
           ))}
         </div>
       )}
+      </div>
     </div>
   )
 }
