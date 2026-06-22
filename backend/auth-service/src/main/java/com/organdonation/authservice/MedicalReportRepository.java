@@ -7,13 +7,13 @@ import java.time.LocalDate;
 
 public interface MedicalReportRepository extends JpaRepository<MedicalReport, Long>,
         JpaSpecificationExecutor<MedicalReport> {
-    List<MedicalReport> findByPatientId(Long patientId);
-    // Obtener todos los reportes de un paciente, ordenados por fecha descendente
-    List<MedicalReport> findByPatientIdOrderByReportDateDesc(Long patientId);
+    List<MedicalReport> findByRecipientId(Long recipientId);
+    // Obtener todos los reportes de un receptor, ordenados por fecha descendente
+    List<MedicalReport> findByRecipientIdOrderByReportDateDesc(Long recipientId);
 
     // Con filtro de estado adicional
-    List<MedicalReport> findByPatientIdAndStatusOrderByReportDateDesc(Long patientId, MedicalReport.ReportStatus status);
+    List<MedicalReport> findByRecipientIdAndStatusOrderByReportDateDesc(Long recipientId, MedicalReport.ReportStatus status);
 
     // Con rango de fechas
-    List<MedicalReport> findByPatientIdAndReportDateBetweenOrderByReportDateDesc(Long patientId, LocalDate fechaInicio, LocalDate fechaFin);
+    List<MedicalReport> findByRecipientIdAndReportDateBetweenOrderByReportDateDesc(Long recipientId, LocalDate fechaInicio, LocalDate fechaFin);
 }

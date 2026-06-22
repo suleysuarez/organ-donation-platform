@@ -78,12 +78,11 @@ public class SecurityConfig {
                 
                 // Endpoints específicos
                 .requestMatchers(HttpMethod.POST, "/api/medicos").permitAll()
-                .requestMatchers("/api/medicos/**").hasAnyRole("MEDICO", "ADMIN")
-                .requestMatchers("/api/pacientes/**").hasAnyRole("MEDICO", "ADMIN")
+                .requestMatchers("/api/medicos/**").hasRole("MEDICO")
                 // Aseguramos que los receptores también estén protegidos
-                .requestMatchers("/api/receptores/**").hasAnyRole("MEDICO", "ADMIN")
-                .requestMatchers("/api/reportes/historial/**").hasAnyRole("MEDICO", "ADMIN", "PACIENTE")
-                .requestMatchers("/api/reportes/**").hasAnyRole("MEDICO", "ADMIN")
+                .requestMatchers("/api/receptores/**").hasRole("MEDICO")
+                .requestMatchers("/api/reportes/historial/**").hasRole("MEDICO")
+                .requestMatchers("/api/reportes/**").hasRole("MEDICO")
                 .anyRequest().authenticated()
         );
 

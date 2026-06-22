@@ -5,8 +5,8 @@ import java.time.LocalDate;
 
 public class MedicalReportRequestDTO {
 
-    @NotNull(message = "El ID del paciente es obligatorio")
-    private Long patientId;
+    @NotNull(message = "El ID del receptor es obligatorio")
+    private Long recipientId;
 
     private Long doctorId;
 
@@ -21,8 +21,8 @@ public class MedicalReportRequestDTO {
     private String status = "PENDIENTE";
 
     // Getters y setters
-    public Long getPatientId() { return patientId; }
-    public void setPatientId(Long patientId) { this.patientId = patientId; }
+    public Long getRecipientId() { return recipientId; }
+    public void setRecipientId(Long recipientId) { this.recipientId = recipientId; }
     public Long getDoctorId() { return doctorId; }
     public void setDoctorId(Long doctorId) { this.doctorId = doctorId; }
     public String getDescription() { return description; }
