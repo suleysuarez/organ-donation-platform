@@ -58,6 +58,20 @@
 .btn-link-danger { color: #d92d20; }
 
 .list-empty { color: #667085; text-align: center; padding: 40px 0; }
+.list-error {
+  color: #d92d20;
+  background: #fef3f2;
+  border: 1px solid #fda29b;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin: 0 0 20px;
+  font-weight: 700;
+}
+
+.btn-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
 
 .badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
 .badge-verified { background-color: #d1fadf; color: #027a48; }

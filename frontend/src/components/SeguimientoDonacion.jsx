@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import PageModuleHeader from './PageModuleHeader'
+import rethusImage from '../assets/Rethus.png'
 import '../styles/SeguimientoDonacion.css'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
@@ -6,6 +8,14 @@ const PROCESOS_URL = `${BASE_URL}/api/procesos`
 const DONANTES_URL = `${BASE_URL}/api/donantes`
 const RECEPTORES_URL = `${BASE_URL}/api/receptores`
 const MEDICOS_URL = `${BASE_URL}/api/medicos`
+
+function getAuthHeaders(extraHeaders = {}) {
+  const token = localStorage.getItem('token')
+  return {
+    ...extraHeaders,
+    Authorization: `Bearer ${token}`,
+  }
+}
 
 // core.donation_processes.current_state (ver schema.sql)
 const ESTADOS = [
@@ -46,7 +56,9 @@ function SeguimientoDonacion() {
     const fetchMedicos = async () => {
       setLoadingMedicos(true)
       try {
-        const response = await fetch(`${MEDICOS_URL}?size=100&sort=fullName,asc`)
+        const response = await fetch(`${MEDICOS_URL}?size=100&sort=fullName,asc`, {
+          headers: getAuthHeaders(),
+        })
         if (response.ok) {
           const data = await response.json()
           setMedicos(data.content || [])
@@ -80,7 +92,9 @@ function SeguimientoDonacion() {
     setHistorialLoading(true)
     setHistorial([])
     try {
-      const response = await fetch(`${PROCESOS_URL}/${proceso.id}/historial`)
+      const response = await fetch(`${PROCESOS_URL}/${proceso.id}/historial`, {
+        headers: getAuthHeaders(),
+      })
       if (response.ok) {
         setHistorial(await response.json())
       }
@@ -106,7 +120,9 @@ function SeguimientoDonacion() {
       if (searchMode === 'donante') url = `${PROCESOS_URL}/donante/${searchId.trim()}`
       if (searchMode === 'receptor') url = `${PROCESOS_URL}/receptor/${searchId.trim()}`
 
-      const response = await fetch(url)
+      const response = await fetch(url, {
+        headers: getAuthHeaders(),
+      })
       if (response.ok) {
         const data = await response.json()
         const lista = Array.isArray(data) ? data : [data]
@@ -146,7 +162,7 @@ function SeguimientoDonacion() {
     try {
       const response = await fetch(`${PROCESOS_URL}/${selectedProcess.id}/estado`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           newState,
           changedById: Number(changedById),
@@ -198,7 +214,9 @@ function SeguimientoDonacion() {
     setDonorLookupError('')
     if (!donorId.trim()) return
     try {
-      const response = await fetch(`${DONANTES_URL}/${donorId.trim()}`)
+      const response = await fetch(`${DONANTES_URL}/${donorId.trim()}`, {
+        headers: getAuthHeaders(),
+      })
       if (response.ok) {
         setDonorLookup(await response.json())
       } else {
@@ -214,7 +232,9 @@ function SeguimientoDonacion() {
     setRecipientLookupError('')
     if (!recipientId.trim()) return
     try {
-      const response = await fetch(`${RECEPTORES_URL}/${recipientId.trim()}`)
+      const response = await fetch(`${RECEPTORES_URL}/${recipientId.trim()}`, {
+        headers: getAuthHeaders(),
+      })
       if (response.ok) {
         setRecipientLookup(await response.json())
       } else {
@@ -239,7 +259,7 @@ function SeguimientoDonacion() {
     try {
       const response = await fetch(PROCESOS_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders({ 'Content-Type': 'application/json' }),
         body: JSON.stringify({
           donorId: Number(donorId.trim()),
           recipientId: Number(recipientId.trim()),
@@ -275,6 +295,11 @@ function SeguimientoDonacion() {
 
   return (
     <div className="seguimiento-container">
+      <PageModuleHeader
+        image={rethusImage}
+        title="Seguimiento de Donacion"
+        subtitle="Consulta procesos de donacion existentes o abre uno nuevo"
+      />
       <div className="list-header">
         <h1>Seguimiento de Donación</h1>
         <p className="list-subtitle">

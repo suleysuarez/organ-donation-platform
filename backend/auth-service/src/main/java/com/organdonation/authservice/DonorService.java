@@ -1,5 +1,7 @@
 package com.organdonation.authservice;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +27,19 @@ public class DonorService {
                         UserRepository userRepository) {
         this.donorRepository = donorRepository;
         this.userRepository = userRepository;
+    }
+
+    /**
+     * Lista los donantes de forma paginada con filtro opcional.
+     */
+    public Page<DonorResponseDTO> listar(String q, Pageable pageable) {
+        Page<Donor> page;
+        if (q == null || q.isBlank()) {
+            page = donorRepository.findAll(pageable);
+        } else {
+            page = donorRepository.buscar(q.trim(), pageable);
+        }
+        return page.map(DonorResponseDTO::from);
     }
 
     /**

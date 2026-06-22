@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import PageModuleHeader from './PageModuleHeader'
+import profileImage from '../assets/Profile.png'
 import '../styles/MedicoDetailPage.css'
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
+
+function getAuthHeaders(extraHeaders = {}) {
+  const token = localStorage.getItem('token')
+  return {
+    ...extraHeaders,
+    Authorization: `Bearer ${token}`,
+  }
+}
 
 function getStatusStyle(status) {
   switch (status) {
@@ -36,7 +46,9 @@ function MedicoDetailPage() {
     setLoading(true)
     setServerError('')
     try {
-      const response = await fetch(`${API_URL}/${id}`)
+      const response = await fetch(`${API_URL}/${id}`, {
+        headers: getAuthHeaders(),
+      })
       if (response.ok) {
         setMedico(await response.json())
       } else if (response.status === 404) {
@@ -73,6 +85,7 @@ function MedicoDetailPage() {
 
       const response = await fetch(`${API_URL}/${id}/certificado`, {
         method: 'POST',
+        headers: getAuthHeaders(),
         body: formData,
       })
 
@@ -107,6 +120,11 @@ function MedicoDetailPage() {
 
   return (
     <div className="detail-container">
+      <PageModuleHeader
+        image={profileImage}
+        title="Detalle del Medico"
+        subtitle="Consulta la informacion profesional y el certificado asociado"
+      />
       <button className="btn-back" onClick={() => navigate('/List/medicos')}>← Volver al listado</button>
 
       <div className="detail-header-card">

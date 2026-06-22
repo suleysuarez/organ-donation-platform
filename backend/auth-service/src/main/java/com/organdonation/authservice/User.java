@@ -29,6 +29,20 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
     public Long getId() { return id; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }

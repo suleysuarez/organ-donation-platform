@@ -6,6 +6,11 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL
 const DONANTES_URL = `${BASE_URL}/api/donantes`
 const RECEPTORES_URL = `${BASE_URL}/api/receptores`
 
+function getAuthHeaders() {
+  const token = localStorage.getItem('token')
+  return { Authorization: `Bearer ${token}` }
+}
+
 function RegistrosPage() {
   const navigate = useNavigate()
   const [tab, setTab] = useState('donante') // 'donante' | 'receptor' | 'consultar'
@@ -82,7 +87,9 @@ function ConsultaPorId() {
     
     try {
       const url = tipo === 'donante' ? `${DONANTES_URL}/${id.trim()}` : `${RECEPTORES_URL}/${id.trim()}`
-      const response = await fetch(url)
+      const response = await fetch(url, {
+        headers: getAuthHeaders(),
+      })
       
       if (response.ok) {
         setResultado(await response.json())

@@ -17,7 +17,7 @@ public class MedicalReport {
     private Recipient recipient;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id")
+    @JoinColumn(name = "doctor_id", nullable = false)
     private User doctor;
 
     @Column(columnDefinition = "TEXT")
