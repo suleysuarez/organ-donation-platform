@@ -1,12 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
 
+/* ── Wrapper pantalla completa con la imagen de fondo (fija, sin scroll) ── */
+.dr-page-wrapper {
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 /* Contenedor principal */
 .dr-container {
   max-width: 800px;
-  margin: 40px auto;
-  padding: 0 20px;
+  width: 100%;
+  max-height: 100vh;
+  overflow: hidden;
+  margin: 0 auto;
+  padding: 24px 20px;
   font-family: 'Nunito Sans', sans-serif;
   box-sizing: border-box;
+  background: transparent;
 }
 
 /* Cabecera */

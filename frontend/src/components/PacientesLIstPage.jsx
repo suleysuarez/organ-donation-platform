@@ -114,6 +114,7 @@ function PacientesListPage() {
                   <div>
                     <h3 className="card-name">{paciente.fullName}</h3>
                     <p className="card-role">Receptor</p>
+                    <span className="card-id-badge">ID #{paciente.id}</span>
                   </div>
                 </div>
 
@@ -137,7 +138,9 @@ function PacientesListPage() {
                   <div className="card-field">
                     <span className="field-label">Tipo de Sangre</span>
                     <span className="field-value">
-                      {paciente.bloodType ? paciente.bloodType.replace('_POS', '+').replace('_NEG', '-') : 'No registrado'}
+                      {paciente.bloodType
+                        ? paciente.bloodType.replace('_POS', '+').replace('_NEG', '-')
+                        : 'No registrado'}
                     </span>
                   </div>
                   <div className="card-field">

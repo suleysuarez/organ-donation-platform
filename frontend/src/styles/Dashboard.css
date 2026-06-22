@@ -3,10 +3,28 @@
 * { box-sizing: border-box; }
 
 .dashboard-layout {
+  position: relative;
   min-height: 100vh;
   width: 100%;
-  background: #ffffff;
+  background: #0c2a46;
   font-family: 'Nunito Sans', sans-serif;
+  overflow: hidden;
+}
+
+/* ── Fondos rotativos del Dashboard (crossfade cada 5s) ── */
+.dashboard-bg-layer {
+  position: fixed;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1.4s ease-in-out;
+  z-index: 0;
+}
+
+.dashboard-bg-layer.is-active {
+  opacity: 1;
 }
 
 .sidebar {
@@ -160,6 +178,8 @@
 }
 
 .dashboard-main {
+  position: relative;
+  z-index: 1;
   min-height: 100vh;
   margin-left: 260px;
   padding: 36px 40px;
@@ -234,44 +254,6 @@
   margin-bottom: 28px;
 }
 
-.stat-card {
-  min-height: 132px;
-  background: rgba(255, 255, 255, 0.96);
-  border-radius: 14px;
-  padding: 24px;
-  box-shadow: 0 4px 16px rgba(12, 42, 70, 0.08);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.stat-icon {
-  width: 46px;
-  min-width: 46px;
-  height: 46px;
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: #f5f7fa;
-  color: #0c2a46;
-  font-size: 22px;
-  font-weight: 800;
-}
-
-.stat-value {
-  font-size: 30px;
-  font-weight: 800;
-  margin: 0 0 4px;
-}
-
-.stat-label {
-  margin: 0;
-  color: #344054;
-  font-size: 15px;
-  line-height: 1.35;
-}
-
 .section-card {
   background: rgba(255, 255, 255, 0.96);
   border-radius: 14px;
@@ -297,6 +279,265 @@
   color: #667085;
   font-weight: 600;
   margin: 14px 0 0;
+}
+
+/* ───────── Layout en columnas ───────── */
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.dashboard-section {
+  margin-bottom: 24px;
+}
+
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.section-header-row .section-title {
+  font-size: 17px;
+}
+
+.section-total-pill {
+  font-size: 13px;
+  font-weight: 700;
+  color: #008b9b;
+  background: #e6f6f8;
+  padding: 6px 14px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+/* ───────── Tarjetas "Personas Registradas" ───────── */
+.people-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.people-card {
+  background: rgba(255, 255, 255, 0.96);
+  border: none;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(12, 42, 70, 0.08);
+  text-align: left;
+  cursor: pointer;
+  font-family: 'Nunito Sans', sans-serif;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.people-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(12, 42, 70, 0.14);
+}
+
+.people-card-icon {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.people-card-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0c2a46;
+  margin: 0 0 2px;
+}
+
+.people-card-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #344054;
+  margin: 0 0 8px;
+}
+
+.people-card-sub {
+  font-size: 12.5px;
+  color: #667085;
+  font-weight: 600;
+  margin: 0;
+}
+
+.people-card-sub-alert {
+  color: #b42318;
+}
+
+/* ───────── Distribución por tipo de sangre ───────── */
+.blood-chart-card {
+  padding: 22px 24px;
+}
+
+.blood-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.blood-row {
+  display: grid;
+  grid-template-columns: 38px 1fr 32px;
+  align-items: center;
+  gap: 12px;
+}
+
+.blood-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0c2a46;
+}
+
+.blood-bar-track {
+  height: 10px;
+  border-radius: 6px;
+  background: #f2f4f7;
+  overflow: hidden;
+}
+
+.blood-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #008b9b, #35a8b4);
+  transition: width 0.4s ease;
+}
+
+.blood-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: #344054;
+  text-align: right;
+}
+
+/* ───────── Reportes Médicos (columna lateral) ───────── */
+.reportes-summary-card {
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Nunito Sans', sans-serif;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.reportes-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(12, 42, 70, 0.14);
+}
+
+.reportes-summary-total {
+  font-size: 36px;
+  font-weight: 800;
+  color: #0c2a46;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.reportes-bar {
+  display: flex;
+  width: 100%;
+  height: 12px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  background: #f2f4f7;
+}
+
+.reportes-bar-segment {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.reportes-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #344054;
+}
+
+.reportes-legend span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reportes-legend b {
+  margin-left: auto;
+  color: #0c2a46;
+}
+
+.legend-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ───────── Actividad reciente ───────── */
+.recent-card {
+  padding: 10px 18px;
+}
+
+.recent-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recent-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #f2f4f7;
+}
+
+.recent-item:last-child {
+  border-bottom: none;
+}
+
+.recent-icon {
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f5f7fa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+}
+
+.recent-name {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #0c2a46;
+}
+
+.recent-meta {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #667085;
+  font-weight: 600;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .people-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .badge {

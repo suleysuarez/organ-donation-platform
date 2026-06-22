@@ -54,7 +54,8 @@
   max-height: 180px; 
   width: auto;
   object-fit: contain;
-  margin-bottom: 0px;
+  margin-bottom: -50px;
+  margin-top: -10px;
 }
 
 .register-medic-page .form-card .subtitle {
@@ -97,7 +98,6 @@
   pointer-events: none;
 }
 
-/* Modificado para asegurar el match correcto con la estructura interna */
 .register-medic-page .input-with-icon input {
   width: 100%;
   height: 44px; 
@@ -160,7 +160,8 @@
   color: #d92d20;
   font-family: 'Nunito Sans', sans-serif;
   font-size: 12px;
-  margin-top: 2px;
+ 
+  margin-bottom: 10px;
   height: 16px;       
   display: block;     
 }
