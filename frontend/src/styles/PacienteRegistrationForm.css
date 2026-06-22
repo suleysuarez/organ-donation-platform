@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
+
+.paciente-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 8%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  box-sizing: border-box;
+  transition: background-image 1.2s ease-in-out;
+}
+
+
+.paciente-container .form-card {
+  width: 480px;
+  max-height: 98vh;
+  padding: 30px 35px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.paciente-container .form-card h1 {
+  text-align: center;
+  color: #0c2a46;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.paciente-container .form-card .logo {
+  max-height: 160px;
+  width: auto;
+  object-fit: contain;
+  margin: 0 auto 0 auto;
+  display: block;
+}
+
+.paciente-container .form-card .subtitle {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  color: #667085;
+  font-weight: 400;
+  margin-top: 0;
+  margin-bottom: -20px;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.paciente-container .input-group {
+  margin-bottom: 6px;
+  width: 100%;
+}
+
+.paciente-container .input-group label {
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #344054;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.paciente-container .input-with-icon {
+  position: relative;
+  width: 100%;
+}
+
+.paciente-container .input-with-icon .inner-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.paciente-container .input-with-icon input {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px 0 50px;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.paciente-container .select-custom {
+  width: 100%;
+  height: 44px;
+  padding: 0 16px 0 44px;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  color: #344054;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.paciente-container .select-custom:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+  color: #98a2b3;
+}
+
+.paciente-container .input-with-icon input:focus,
+.paciente-container .select-custom:focus {
+  outline: none;
+  border-color: #008b9b;
+}
+
+.paciente-container .button-register {
+  width: 100%;
+  height: 59px;
+  margin-top: 15px;
+  background-color: #008b9b;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.paciente-container .button-register:hover {
+  background-color: #007684;
+}
+
+.paciente-container .button-register:disabled {
+  background-color: #a5d3d8;
+  cursor: not-allowed;
+}
+
+.paciente-container .error {
+  color: #d92d20;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 12px;
+  margin-top: 2px;
+  height: 16px;
+  display: block;
+}
+
+.paciente-container .success-message {
+  color: #039855;
+  text-align: center;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.paciente-container .error-server {
+  color: #d92d20;
+  text-align: center;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  margin-bottom: 10px;
+}

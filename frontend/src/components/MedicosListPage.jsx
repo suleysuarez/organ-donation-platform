@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import PageModuleHeader from './PageModuleHeader'
+import profileImage from '../assets/Profile.png'
 import '../styles/MedicosListPage.css'
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
@@ -20,6 +23,8 @@ function getStatusLabel(status) {
 }
 
 function MedicosListPage() {
+  const navigate = useNavigate()
+
   const [medicos, setMedicos] = useState([])
   const [loading, setLoading] = useState(true)
   const [serverError, setServerError] = useState('')
@@ -46,12 +51,21 @@ function MedicosListPage() {
       })
       if (search.trim()) params.append('q', search.trim())
 
-      const response = await fetch(`${API_URL}?${params}`)
+      const token = localStorage.getItem('token')
+      
+      const response = await fetch(`${API_URL}?${params}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
 
       if (response.ok) {
         const data = await response.json()
         setMedicos(data.content)
         setTotalPages(data.totalPages)
+      } else if (response.status === 403) {
+        setServerError('No tienes permisos para ver esta información.')
       } else {
         setServerError('Error al cargar los médicos.')
       }
@@ -76,10 +90,11 @@ function MedicosListPage() {
 
   return (
     <div className="list-container">
-      <div className="list-header">
-        <h1>Médicos Registrados</h1>
-        <p className="list-subtitle">Gestiona y visualiza los profesionales de salud registrados en el sistema</p>
-      </div>
+      <PageModuleHeader
+        image={profileImage}
+        title="Medicos Registrados"
+        subtitle="Gestiona y visualiza los profesionales de salud registrados en el sistema"
+      />
 
       <form className="search-bar" onSubmit={handleSearch}>
         <input
@@ -148,6 +163,15 @@ function MedicosListPage() {
                   <span className={`badge ${medico.isActive ? 'badge-active' : 'badge-inactive'}`}>
                     {medico.isActive ? 'Activo' : 'Inactivo'}
                   </span>
+                </div>
+
+                <div className="card-actions">
+                  <button
+                    className="btn-detail"
+                    onClick={() => navigate(`/List/medicos/${medico.id}`)}
+                  >
+                    Ver Detalle →
+                  </button>
                 </div>
               </div>
             ))}

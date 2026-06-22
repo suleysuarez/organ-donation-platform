@@ -2,6 +2,8 @@ package com.organdonation.authservice;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 /**
  * Servicio de autenticación y registro de usuarios.

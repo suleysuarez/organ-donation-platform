@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/MedRegistrationForm.css'
 
 import logo from '../assets/Logo_UI.png'
@@ -18,6 +19,7 @@ const backgrounds = [bg1, bg2, bg3]
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
 
 function MedRegistrationForm() {
+  const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [documentType, setDocumentType] = useState('CC') 
   const [documentNumber, setDocumentNumber] = useState('')
@@ -40,7 +42,6 @@ function MedRegistrationForm() {
 
     return () => clearInterval(interval)
   }, [])
-
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -78,7 +79,6 @@ function MedRegistrationForm() {
     if (Object.keys(newErrors).length === 0) {
       setLoading(true)
 
-     
       const requestData = {
         fullName: fullName.trim(),
         documentType: documentType,
@@ -90,7 +90,6 @@ function MedRegistrationForm() {
       }
 
       try {
-       
         const response = await fetch(API_URL, {
           method: 'POST',
           headers: {
@@ -99,7 +98,6 @@ function MedRegistrationForm() {
           body: JSON.stringify(requestData)
         })
 
-       
         if (response.ok || response.status === 201) {
           setSuccess('¡Médico registrado con éxito!')
 
@@ -110,16 +108,18 @@ function MedRegistrationForm() {
           setProfessionalProfile('')
           setEmail('')
           setPassword('')
+          setTimeout(() => navigate('/'), 1200)
         } else {
-         
           const errorData = await response.json().catch(() => null)
           const mensajeError = errorData?.error
+            ? `${errorData.error}${errorData?.detalle ? ` Detalle: ${errorData.detalle}` : ''}`
+            : null
+            || errorData?.detalle
             || (Array.isArray(errorData?.errores) ? errorData.errores.join(', ') : null)
             || 'Error del servidor al procesar el registro.'
           setServerError(mensajeError)
         }
       } catch (error) {
-
         setServerError('No se pudo conectar con el servidor. Verifica si el backend está encendido.')
       } finally {
         setLoading(false)
@@ -128,8 +128,9 @@ function MedRegistrationForm() {
   }
 
   return (
+    /* Encapsulado aquí con la clase raíz específica para evitar conflictos */
     <div 
-      className="container"
+      className="register-medic-page container"
       style={{ backgroundImage: `url(${backgrounds[currentBgIndex]})` }}
     >
       <form className="form-card" onSubmit={handleSubmit}>
@@ -270,4 +271,4 @@ function MedRegistrationForm() {
   )
 }
 
-export default MedRegistrationForm; 
+export default MedRegistrationForm

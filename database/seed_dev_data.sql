@@ -13,6 +13,7 @@
 BEGIN;
 
 -- ----- Limpieza (orden seguro por FKs) --------------------------------
+DELETE FROM core.medical_reports;
 DELETE FROM core.process_documents;
 DELETE FROM core.process_status_history;
 DELETE FROM core.donation_processes;
@@ -116,5 +117,13 @@ VALUES
      'uploads/processes/p1/historia_clinica.pdf', 'historia_clinica.pdf',
      'application/pdf', 245678,
      (SELECT id FROM auth.users WHERE email='carla.medico@hospital.co'));
+
+-- ----- Reportes clínicos (core.medical_reports) — receptor Marta -------
+INSERT INTO core.medical_reports
+    (recipient_id, doctor_id, description, diagnosis, report_date, status)
+VALUES
+    ((SELECT id FROM core.recipients WHERE document_number='3030303030'),
+     (SELECT id FROM auth.users WHERE email='carla.medico@hospital.co'),
+     'Evaluación inicial del receptor.', 'Apto para lista de espera.', CURRENT_DATE, 'COMPLETADO');
 
 COMMIT;
