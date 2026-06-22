@@ -72,17 +72,20 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/docs", "/docs/**", "/swagger-ui/**", "/swagger-ui.html",
                         "/v3/api-docs", "/v3/api-docs/**").permitAll()
                 
                 // Endpoints específicos
+                .requestMatchers(HttpMethod.POST, "/api/auth/register").hasRole("MEDICO")
                 .requestMatchers(HttpMethod.POST, "/api/medicos").permitAll()
-                .requestMatchers("/api/medicos/**").hasRole("MEDICO")
-                // Aseguramos que los receptores también estén protegidos
-                .requestMatchers("/api/receptores/**").hasRole("MEDICO")
+                .requestMatchers("/api/medicos", "/api/medicos/**").hasRole("MEDICO")
+                // Aseguramos que los registros clinicos solo los gestionen medicos
+                .requestMatchers("/api/donantes", "/api/donantes/**").hasRole("MEDICO")
+                .requestMatchers("/api/receptores", "/api/receptores/**").hasRole("MEDICO")
+                .requestMatchers("/api/procesos", "/api/procesos/**").hasRole("MEDICO")
                 .requestMatchers("/api/reportes/historial/**").hasRole("MEDICO")
-                .requestMatchers("/api/reportes/**").hasRole("MEDICO")
+                .requestMatchers("/api/reportes", "/api/reportes/**").hasRole("MEDICO")
                 .anyRequest().authenticated()
         );
 

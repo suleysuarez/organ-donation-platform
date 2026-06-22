@@ -67,7 +67,12 @@ function LoginForm() {
 
         if (response.ok) {
           const data = await response.json()
+          if (data.role !== 'MEDICO') {
+            setServerError('Solo los profesionales de salud pueden acceder al sistema.')
+            return
+          }
           localStorage.setItem('token', data.token)
+          localStorage.setItem('role', data.role)
           navigate('/dashboard')
         } else {
           const errorData = await response.json().catch(() => null)
@@ -133,8 +138,6 @@ function LoginForm() {
 
         <div className="register-links">
           <p>¿No tienes cuenta?</p>
-          <Link to="/register-user" className="link-register">Usuario</Link>
-          <span className="link-separator">|</span>
           <Link to="/register-medic" className="link-register">Médico</Link>
         </div>
 

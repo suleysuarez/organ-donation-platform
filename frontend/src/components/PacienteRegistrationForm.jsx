@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/PacienteRegistrationForm.css'
 
 import logo from '../assets/Logo_UI.png'
@@ -18,6 +19,7 @@ const API_URL = `${BASE_URL}/api/receptores`
 const MEDICOS_URL = `${BASE_URL}/api/medicos`
 
 function PacienteRegistrationForm() {
+  const navigate = useNavigate()
   const [medicos, setMedicos] = useState([])
   const [loadingMedicos, setLoadingMedicos] = useState(true)
   const [registeredById, setRegisteredById] = useState('')
@@ -146,6 +148,7 @@ function PacienteRegistrationForm() {
           setUrgencyLevel('MEDIA')
           setContactPhone('')
           setContactEmail('')
+          setTimeout(() => navigate('/List/pacientes'), 1000)
         } else {
           const errorData = await response.json().catch(() => null)
           const mensajeError =

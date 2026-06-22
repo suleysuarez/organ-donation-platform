@@ -1,6 +1,7 @@
 package com.organdonation.authservice;
 
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,6 +49,12 @@ public class AuthController {
                 .findFirst()
                 .map(grantedAuthority -> grantedAuthority.getAuthority().replace("ROLE_", ""))
                 .orElse("");
+
+        if (!"MEDICO".equals(role)) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "Solo los profesionales de salud pueden acceder al sistema");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        }
 
         String token = jwtUtil.generateToken(email, role);
 

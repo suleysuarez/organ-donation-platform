@@ -1,0 +1,36 @@
+.global-back-button {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: 1000;
+  min-width: 84px;
+  height: 38px;
+  border: 1px solid rgba(12, 42, 70, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #0c2a46;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 10px 24px rgba(12, 42, 70, 0.14);
+  cursor: pointer;
+}
+
+.global-back-button:hover {
+  background: #f3fbfd;
+  border-color: #008b9b;
+}
+
+.global-back-button:focus-visible {
+  outline: 3px solid rgba(0, 139, 155, 0.24);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .global-back-button {
+    top: 12px;
+    right: 12px;
+    min-width: 76px;
+    height: 34px;
+    font-size: 13px;
+  }
+}

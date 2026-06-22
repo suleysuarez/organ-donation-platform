@@ -1,10 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import PageModuleHeader from './PageModuleHeader'
+import documentImage from '../assets/Document.png'
 import '../styles/DonantesReceptoresPage.css'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL
 const DONANTES_URL = `${BASE_URL}/api/donantes`
 const RECEPTORES_URL = `${BASE_URL}/api/receptores`
+
+function getAuthHeaders() {
+  const token = localStorage.getItem('token')
+  return { Authorization: `Bearer ${token}` }
+}
 
 function RegistrosPage() {
   const navigate = useNavigate()
@@ -12,6 +19,11 @@ function RegistrosPage() {
 
   return (
     <div className="dr-container">
+      <PageModuleHeader
+        image={documentImage}
+        title="Panel de Registros y Consultas"
+        subtitle="Selecciona una opcion para registrar o consultar en el sistema"
+      />
       <div className="list-header">
         <h1>Panel de Registros y Consultas</h1>
         <p className="list-subtitle">Selecciona una opción para registrar o consultar en el sistema</p>
@@ -82,7 +94,9 @@ function ConsultaPorId() {
     
     try {
       const url = tipo === 'donante' ? `${DONANTES_URL}/${id.trim()}` : `${RECEPTORES_URL}/${id.trim()}`
-      const response = await fetch(url)
+      const response = await fetch(url, {
+        headers: getAuthHeaders(),
+      })
       
       if (response.ok) {
         setResultado(await response.json())

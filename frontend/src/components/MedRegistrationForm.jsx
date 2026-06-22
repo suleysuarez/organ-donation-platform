@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/MedRegistrationForm.css'
 
 import logo from '../assets/Logo_UI.png'
@@ -18,6 +19,7 @@ const backgrounds = [bg1, bg2, bg3]
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
 
 function MedRegistrationForm() {
+  const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [documentType, setDocumentType] = useState('CC') 
   const [documentNumber, setDocumentNumber] = useState('')
@@ -106,9 +108,13 @@ function MedRegistrationForm() {
           setProfessionalProfile('')
           setEmail('')
           setPassword('')
+          setTimeout(() => navigate('/'), 1200)
         } else {
           const errorData = await response.json().catch(() => null)
           const mensajeError = errorData?.error
+            ? `${errorData.error}${errorData?.detalle ? ` Detalle: ${errorData.detalle}` : ''}`
+            : null
+            || errorData?.detalle
             || (Array.isArray(errorData?.errores) ? errorData.errores.join(', ') : null)
             || 'Error del servidor al procesar el registro.'
           setServerError(mensajeError)

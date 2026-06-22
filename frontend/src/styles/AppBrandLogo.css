@@ -1,0 +1,18 @@
+.app-brand-logo {
+  position: fixed;
+  top: 14px;
+  left: 18px;
+  width: 58px;
+  height: auto;
+  object-fit: contain;
+  z-index: 90;
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .app-brand-logo {
+    width: 48px;
+    top: 10px;
+    left: 12px;
+  }
+}

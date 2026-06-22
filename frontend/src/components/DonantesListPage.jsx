@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import PageModuleHeader from './PageModuleHeader'
-import nameImage from '../assets/Name.png'
+import emailImage from '../assets/Email.png'
 import '../styles/PacientesListPage.css'
 
-const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/receptores`
+const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/donantes`
 const PAGE_SIZE = 6
 
-function PacientesListPage() {
-  const [pacientes, setPacientes] = useState([])
+function DonantesListPage() {
+  const [donantes, setDonantes] = useState([])
   const [loading, setLoading] = useState(true)
   const [serverError, setServerError] = useState('')
   const [search, setSearch] = useState('')
@@ -16,10 +16,10 @@ function PacientesListPage() {
   const [totalPages, setTotalPages] = useState(0)
 
   useEffect(() => {
-    fetchPacientes()
+    fetchDonantes()
   }, [page, search])
 
-  const fetchPacientes = async () => {
+  const fetchDonantes = async () => {
     setLoading(true)
     setServerError('')
 
@@ -27,28 +27,27 @@ function PacientesListPage() {
       const params = new URLSearchParams({
         page,
         size: PAGE_SIZE,
-        sort: 'fullName,asc'
+        sort: 'fullName,asc',
       })
       if (search.trim()) params.append('q', search.trim())
 
       const token = localStorage.getItem('token')
       const response = await fetch(`${API_URL}?${params}`, {
-        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       })
 
       if (response.ok) {
         const data = await response.json()
-        setPacientes(data.content || [])
+        setDonantes(data.content || [])
         setTotalPages(data.totalPages || 0)
       } else {
-        setServerError('Error al cargar la lista de pacientes.')
+        setServerError('Error al cargar la lista de donantes.')
       }
-    } catch (error) {
-      setServerError('No se pudo conectar con el servidor. Verifica si el backend está encendido.')
+    } catch {
+      setServerError('No se pudo conectar con el servidor.')
     } finally {
       setLoading(false)
     }
@@ -69,9 +68,9 @@ function PacientesListPage() {
   return (
     <div className="list-container">
       <PageModuleHeader
-        image={nameImage}
-        title="Receptores Registrados"
-        subtitle="Consulta y gestiona los receptores registrados en el sistema"
+        image={emailImage}
+        title="Donantes Registrados"
+        subtitle="Consulta y gestiona los donantes registrados por el personal medico"
       />
 
       <form className="search-bar" onSubmit={handleSearch}>
@@ -79,12 +78,10 @@ function PacientesListPage() {
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Buscar por nombre o número de documento..."
+          placeholder="Buscar por nombre o numero de documento..."
           className="search-input"
         />
-        <button type="submit" className="btn-search">
-          Buscar
-        </button>
+        <button type="submit" className="btn-search">Buscar</button>
         {search && (
           <button type="button" className="btn-clear" onClick={handleClear}>
             Limpiar
@@ -95,92 +92,68 @@ function PacientesListPage() {
       {serverError && <p className="list-error">{serverError}</p>}
 
       {loading ? (
-        <p className="list-loading">Cargando pacientes...</p>
-      ) : pacientes.length === 0 ? (
+        <p className="list-loading">Cargando donantes...</p>
+      ) : donantes.length === 0 ? (
         <p className="list-empty">
-          {search
-            ? `No se encontraron pacientes para "${search}".`
-            : 'No hay pacientes registrados aún.'}
+          {search ? `No se encontraron donantes para "${search}".` : 'No hay donantes registrados aun.'}
         </p>
       ) : (
         <>
           <div className="cards-grid">
-            {pacientes.map((paciente) => (
-              <div className="paciente-card" key={paciente.id}>
+            {donantes.map((donante) => (
+              <div className="paciente-card" key={donante.id}>
                 <div className="card-header">
                   <div className="card-avatar">
-                    {paciente.fullName ? paciente.fullName.charAt(0).toUpperCase() : 'P'}
+                    {donante.fullName ? donante.fullName.charAt(0).toUpperCase() : 'D'}
                   </div>
                   <div>
-                    <h3 className="card-name">{paciente.fullName}</h3>
-                    <p className="card-role">Receptor</p>
+                    <h3 className="card-name">{donante.fullName}</h3>
+                    <p className="card-role">Donante</p>
                   </div>
                 </div>
 
                 <div className="card-body">
                   <div className="card-field">
                     <span className="field-label">Correo</span>
-                    <span className="field-value">{paciente.contactEmail || 'No registrado'}</span>
+                    <span className="field-value">{donante.contactEmail || 'No registrado'}</span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Documento</span>
-                    <span className="field-value">
-                      {paciente.documentType} — {paciente.documentNumber}
-                    </span>
+                    <span className="field-value">{donante.documentType} - {donante.documentNumber}</span>
                   </div>
                   <div className="card-field">
-                    <span className="field-label">Teléfono</span>
-                    <span className="field-value">
-                      {paciente.contactPhone || 'No registrado'}
-                    </span>
+                    <span className="field-label">Telefono</span>
+                    <span className="field-value">{donante.contactPhone || 'No registrado'}</span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Tipo de Sangre</span>
                     <span className="field-value">
-                      {paciente.bloodType ? paciente.bloodType.replace('_POS', '+').replace('_NEG', '-') : 'No registrado'}
+                      {donante.bloodType ? donante.bloodType.replace('_POS', '+').replace('_NEG', '-') : 'No registrado'}
                     </span>
                   </div>
                   <div className="card-field">
                     <span className="field-label">Registro</span>
                     <span className="field-value">
-                      {paciente.createdAt
-                        ? new Date(paciente.createdAt).toLocaleDateString('es-CO')
-                        : '—'}
+                      {donante.createdAt ? new Date(donante.createdAt).toLocaleDateString('es-CO') : '-'}
                     </span>
                   </div>
                 </div>
 
                 <div className="card-footer">
-                  <span className="badge badge-paciente">Paciente</span>
-                  <span
-                    className={`badge ${
-                      paciente.isActive !== false ? 'badge-active' : 'badge-inactive'
-                    }`}
-                  >
-                    {paciente.isActive !== false ? 'Activo' : 'Inactivo'}
-                  </span>
+                  <span className="badge badge-paciente">Donante</span>
+                  <span className="badge badge-active">{donante.status || 'Activo'}</span>
                 </div>
               </div>
             ))}
           </div>
 
           <div className="pagination">
-            <button
-              className="btn-page"
-              onClick={() => setPage((p) => p - 1)}
-              disabled={page === 0}
-            >
-              ← Anterior
+            <button className="btn-page" onClick={() => setPage((p) => p - 1)} disabled={page === 0}>
+              Anterior
             </button>
-            <span className="page-info">
-              Página {page + 1} de {totalPages}
-            </span>
-            <button
-              className="btn-page"
-              onClick={() => setPage((p) => p + 1)}
-              disabled={page + 1 >= totalPages}
-            >
-              Siguiente →
+            <span className="page-info">Pagina {page + 1} de {totalPages || 1}</span>
+            <button className="btn-page" onClick={() => setPage((p) => p + 1)} disabled={page + 1 >= totalPages}>
+              Siguiente
             </button>
           </div>
         </>
@@ -189,4 +162,4 @@ function PacientesListPage() {
   )
 }
 
-export default PacientesListPage
+export default DonantesListPage

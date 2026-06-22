@@ -6,6 +6,7 @@ import java.time.Instant;
 public class MedicoResponseDTO {
 
     private Long id;
+    private Long userId;
     private String fullName;
     private String email;
     private Boolean isActive;
@@ -22,6 +23,7 @@ public class MedicoResponseDTO {
         dto.id = p.getId();
         dto.fullName = p.getFullName();
         if (p.getUser() != null) {
+            dto.userId = p.getUser().getId();
             dto.email = p.getUser().getEmail();
             dto.isActive = p.getUser().getIsActive();
         }
@@ -36,6 +38,7 @@ public class MedicoResponseDTO {
     }
 
     public Long getId() { return id; }
+    public Long getUserId() { return userId; }
     public String getFullName() { return fullName; }
     public String getEmail() { return email; }
     public Boolean getIsActive() { return isActive; }

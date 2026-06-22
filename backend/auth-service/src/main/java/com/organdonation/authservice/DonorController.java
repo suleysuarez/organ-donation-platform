@@ -1,6 +1,8 @@
 package com.organdonation.authservice;
 
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,14 @@ public class DonorController {
 
     public DonorController(DonorService donorService) {
         this.donorService = donorService;
+    }
+
+    /** Lista los donantes con paginaciÃ³n y bÃºsqueda opcional. */
+    @GetMapping
+    public Page<DonorResponseDTO> listar(
+            @RequestParam(required = false) String q,
+            Pageable pageable) {
+        return donorService.listar(q, pageable);
     }
 
     /** Registra un nuevo donante. */

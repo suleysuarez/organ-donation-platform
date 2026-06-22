@@ -60,6 +60,10 @@ public class MedicoService {
             throw new RuntimeException("El correo ya está registrado");
         }
 
+        if (repository.existsByDocumentNumber(dto.getDocumentNumber())) {
+            throw new RuntimeException("El numero de documento ya esta registrado");
+        }
+
         User user = new User();
         user.setEmail(dto.getEmail());
         // CORRECCIÓN: Contraseña encriptada

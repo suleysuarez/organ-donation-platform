@@ -77,13 +77,9 @@ public class MedicalReportController {
             return ResponseEntity.badRequest().body("El receptor no existe");
         }
 
-        User doctor = null;
-        if (dto.getDoctorId() != null) {
-            Optional<User> doctorOpt = userRepository.findById(dto.getDoctorId());
-            if (doctorOpt.isEmpty() || !"MEDICO".equals(doctorOpt.get().getRole())) {
-                return ResponseEntity.badRequest().body("El doctor no existe o no tiene rol MEDICO");
-            }
-            doctor = doctorOpt.get();
+        Optional<User> doctorOpt = userRepository.findById(dto.getDoctorId());
+        if (doctorOpt.isEmpty() || !"MEDICO".equals(doctorOpt.get().getRole())) {
+            return ResponseEntity.badRequest().body("El doctor no existe o no tiene rol MEDICO");
         }
 
         if (dto.getReportDate().isAfter(LocalDate.now())) {
@@ -92,7 +88,7 @@ public class MedicalReportController {
 
         MedicalReport report = new MedicalReport();
         report.setRecipient(recipientOpt.get());
-        report.setDoctor(doctor);
+        report.setDoctor(doctorOpt.get());
         report.setDescription(dto.getDescription());
         report.setDiagnosis(dto.getDiagnosis());
         report.setReportDate(dto.getReportDate());
@@ -117,15 +113,11 @@ public class MedicalReportController {
         }
         report.setRecipient(recipientOpt.get());
 
-        if (dto.getDoctorId() != null) {
-            Optional<User> doctorOpt = userRepository.findById(dto.getDoctorId());
-            if (doctorOpt.isEmpty() || !"MEDICO".equals(doctorOpt.get().getRole())) {
-                return ResponseEntity.badRequest().body("El doctor no existe o no tiene rol MEDICO");
-            }
-            report.setDoctor(doctorOpt.get());
-        } else {
-            report.setDoctor(null);
+        Optional<User> doctorOpt = userRepository.findById(dto.getDoctorId());
+        if (doctorOpt.isEmpty() || !"MEDICO".equals(doctorOpt.get().getRole())) {
+            return ResponseEntity.badRequest().body("El doctor no existe o no tiene rol MEDICO");
         }
+        report.setDoctor(doctorOpt.get());
 
         if (dto.getReportDate().isAfter(LocalDate.now())) {
             return ResponseEntity.badRequest().body("La fecha del reporte no puede ser futura");

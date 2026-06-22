@@ -8,6 +8,7 @@ public class MedicalReportRequestDTO {
     @NotNull(message = "El ID del receptor es obligatorio")
     private Long recipientId;
 
+    @NotNull(message = "El ID del medico es obligatorio")
     private Long doctorId;
 
     @NotBlank(message = "La descripción es obligatoria")

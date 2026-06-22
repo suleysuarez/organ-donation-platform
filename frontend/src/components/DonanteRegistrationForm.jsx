@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../styles/PacienteRegistrationForm.css' // Usamos el mismo CSS para mantener el diseño idéntico
 
 import logo from '../assets/Logo_UI.png'
@@ -18,6 +19,7 @@ const API_URL = `${BASE_URL}/api/donantes` // Endpoint de donantes
 const MEDICOS_URL = `${BASE_URL}/api/medicos`
 
 function DonanteRegistrationForm() {
+  const navigate = useNavigate()
   const [medicos, setMedicos] = useState([])
   const [loadingMedicos, setLoadingMedicos] = useState(true)
   const [registeredById, setRegisteredById] = useState('')
@@ -144,6 +146,7 @@ function DonanteRegistrationForm() {
           setContactEmail('')
           setAddress('')
           setMedicalNotes('')
+          setTimeout(() => navigate('/List/donantes'), 1000)
         } else {
           const errorData = await response.json().catch(() => null)
           const mensajeError =

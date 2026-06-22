@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 public interface MedicalProfessionalProfileRepository
         extends JpaRepository<MedicalProfessionalProfile, Long> {
 
+    boolean existsByDocumentNumber(String documentNumber);
+
     /**
      * Búsqueda paginada por coincidencia parcial (case-insensitive) en nombre o documento.
      * Se invoca solo con {@code q} no nulo (el servicio usa findAll cuando no hay filtro).

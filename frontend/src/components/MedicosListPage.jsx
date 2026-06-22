@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import PageModuleHeader from './PageModuleHeader'
+import profileImage from '../assets/Profile.png'
 import '../styles/MedicosListPage.css'
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
@@ -88,10 +90,11 @@ function MedicosListPage() {
 
   return (
     <div className="list-container">
-      <div className="list-header">
-        <h1>Médicos Registrados</h1>
-        <p className="list-subtitle">Gestiona y visualiza los profesionales de salud registrados en el sistema</p>
-      </div>
+      <PageModuleHeader
+        image={profileImage}
+        title="Medicos Registrados"
+        subtitle="Gestiona y visualiza los profesionales de salud registrados en el sistema"
+      />
 
       <form className="search-bar" onSubmit={handleSearch}>
         <input
