@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "medical_reports", schema = "auth")
+@Table(name = "medical_reports", schema = "core")
 public class MedicalReport {
 
     @Id
@@ -13,8 +13,8 @@ public class MedicalReport {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private Recipient recipient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
@@ -47,8 +47,8 @@ public class MedicalReport {
 
     // Getters y setters
     public Long getId() { return id; }
-    public User getPatient() { return patient; }
-    public void setPatient(User patient) { this.patient = patient; }
+    public Recipient getRecipient() { return recipient; }
+    public void setRecipient(Recipient recipient) { this.recipient = recipient; }
     public User getDoctor() { return doctor; }
     public void setDoctor(User doctor) { this.doctor = doctor; }
     public String getDescription() { return description; }

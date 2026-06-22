@@ -17,16 +17,19 @@ public class MedicalReportController {
 
     private final MedicalReportRepository reportRepository;
     private final UserRepository userRepository;
+    private final RecipientRepository recipientRepository;
 
     public MedicalReportController(MedicalReportRepository reportRepository,
-                                   UserRepository userRepository) {
+                                   UserRepository userRepository,
+                                   RecipientRepository recipientRepository) {
         this.reportRepository = reportRepository;
         this.userRepository = userRepository;
+        this.recipientRepository = recipientRepository;
     }
 
     @GetMapping
     public ResponseEntity<List<MedicalReportResponseDTO>> listarReportes(
-            @RequestParam(required = false) Long patientId,
+            @RequestParam(required = false) Long recipientId,
             @RequestParam(required = false) Long doctorId,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) LocalDate fechaDesde,
@@ -34,8 +37,8 @@ public class MedicalReportController {
 
         Specification<MedicalReport> spec = (root, query, cb) -> cb.conjunction();
 
-        if (patientId != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("patient").get("id"), patientId));
+        if (recipientId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("recipient").get("id"), recipientId));
         }
         if (doctorId != null) {
             spec = spec.and((root, query, cb) -> cb.equal(root.get("doctor").get("id"), doctorId));
@@ -69,9 +72,9 @@ public class MedicalReportController {
 
     @PostMapping
     public ResponseEntity<?> crearReporte(@Valid @RequestBody MedicalReportRequestDTO dto) {
-        Optional<User> patientOpt = userRepository.findById(dto.getPatientId());
-        if (patientOpt.isEmpty() || !"PACIENTE".equals(patientOpt.get().getRole())) {
-            return ResponseEntity.badRequest().body("El paciente no existe o no tiene rol PACIENTE");
+        Optional<Recipient> recipientOpt = recipientRepository.findById(dto.getRecipientId());
+        if (recipientOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("El receptor no existe");
         }
 
         User doctor = null;
@@ -88,7 +91,7 @@ public class MedicalReportController {
         }
 
         MedicalReport report = new MedicalReport();
-        report.setPatient(patientOpt.get());
+        report.setRecipient(recipientOpt.get());
         report.setDoctor(doctor);
         report.setDescription(dto.getDescription());
         report.setDiagnosis(dto.getDiagnosis());
@@ -108,11 +111,11 @@ public class MedicalReportController {
         }
         MedicalReport report = reportOpt.get();
 
-        Optional<User> patientOpt = userRepository.findById(dto.getPatientId());
-        if (patientOpt.isEmpty() || !"PACIENTE".equals(patientOpt.get().getRole())) {
-            return ResponseEntity.badRequest().body("El paciente no existe o no tiene rol PACIENTE");
+        Optional<Recipient> recipientOpt = recipientRepository.findById(dto.getRecipientId());
+        if (recipientOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("El receptor no existe");
         }
-        report.setPatient(patientOpt.get());
+        report.setRecipient(recipientOpt.get());
 
         if (dto.getDoctorId() != null) {
             Optional<User> doctorOpt = userRepository.findById(dto.getDoctorId());
@@ -146,18 +149,18 @@ public class MedicalReportController {
         reportRepository.deleteById(id);
         return ResponseEntity.ok("Reporte eliminado exitosamente");
     }
-    // ========== CONSULTA DE HISTORIAL CLÍNICO DE UN PACIENTE ==========
-    @GetMapping("/historial/{patientId}")
+    // ========== CONSULTA DE HISTORIAL CLÍNICO DE UN RECEPTOR ==========
+    @GetMapping("/historial/{recipientId}")
     public ResponseEntity<?> historialPaciente(
-            @PathVariable Long patientId,
+            @PathVariable Long recipientId,
             @RequestParam(required = false) LocalDate fechaDesde,
             @RequestParam(required = false) LocalDate fechaHasta,
             @RequestParam(required = false) String status) {
 
-        // Validar que el paciente existe y es PACIENTE
-        Optional<User> patientOpt = userRepository.findById(patientId);
-        if (patientOpt.isEmpty() || !"PACIENTE".equals(patientOpt.get().getRole())) {
-            return ResponseEntity.badRequest().body("El paciente no existe o no tiene rol PACIENTE");
+        // Validar que el receptor existe
+        Optional<Recipient> recipientOpt = recipientRepository.findById(recipientId);
+        if (recipientOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body("El receptor no existe");
         }
 
         // Convertir estado a enum, de forma que sea efectivamente final para la lambda
@@ -169,23 +172,23 @@ public class MedicalReportController {
 
         if (fechaDesde != null && fechaHasta != null) {
             if (reportStatus != null) {
-                // Filtro combinado: paciente + rango de fechas + estado
+                // Filtro combinado: receptor + rango de fechas + estado
                 final MedicalReport.ReportStatus finalStatus = reportStatus;
                 reportes = reportRepository.findAll((root, query, cb) -> {
                     List<Predicate> predicates = new ArrayList<>();
-                    predicates.add(cb.equal(root.get("patient").get("id"), patientId));
+                    predicates.add(cb.equal(root.get("recipient").get("id"), recipientId));
                     predicates.add(cb.between(root.get("reportDate"), fechaDesde, fechaHasta));
                     predicates.add(cb.equal(root.get("status"), finalStatus));
                     query.orderBy(cb.desc(root.get("reportDate")));
                     return cb.and(predicates.toArray(new Predicate[0]));
                 });
             } else {
-                reportes = reportRepository.findByPatientIdAndReportDateBetweenOrderByReportDateDesc(patientId, fechaDesde, fechaHasta);
+                reportes = reportRepository.findByRecipientIdAndReportDateBetweenOrderByReportDateDesc(recipientId, fechaDesde, fechaHasta);
             }
         } else if (reportStatus != null) {
-            reportes = reportRepository.findByPatientIdAndStatusOrderByReportDateDesc(patientId, reportStatus);
+            reportes = reportRepository.findByRecipientIdAndStatusOrderByReportDateDesc(recipientId, reportStatus);
         } else {
-            reportes = reportRepository.findByPatientIdOrderByReportDateDesc(patientId);
+            reportes = reportRepository.findByRecipientIdOrderByReportDateDesc(recipientId);
         }
 
         List<MedicalReportResponseDTO> response = reportes.stream()
