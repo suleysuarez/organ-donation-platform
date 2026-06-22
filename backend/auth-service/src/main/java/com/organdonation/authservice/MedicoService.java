@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Capa de servicio para la gestión de perfiles de profesionales de salud (médicos).
@@ -34,13 +35,16 @@ public class MedicoService {
     private final MedicalProfessionalProfileRepository repository;
     private final UserRepository userRepository;
     private final RethusClient rethusClient;
+    private final PasswordEncoder passwordEncoder;
 
     public MedicoService(MedicalProfessionalProfileRepository repository,
                          UserRepository userRepository,
-                         RethusClient rethusClient) {
+                         RethusClient rethusClient,
+                         PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.rethusClient = rethusClient;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /** Listado paginado de médicos, con filtro opcional de texto libre {@code q}. */
@@ -79,7 +83,7 @@ public class MedicoService {
 
         User user = new User();
         user.setEmail(dto.getEmail());
-        user.setPasswordHash(dto.getPassword());
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setRole("MEDICO");
         User savedUser = userRepository.save(user);
 
