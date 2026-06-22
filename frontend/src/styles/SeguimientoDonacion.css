@@ -1,8 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap');
 
+/* ── Wrapper pantalla completa con la imagen de fondo ── */
+.seguimiento-page-wrapper {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
 .seguimiento-container {
   min-height: 100vh;
-  background-color: #ffffff;
+  background-color: transparent;
   padding: 40px 5%;
   box-sizing: border-box;
   font-family: 'Nunito Sans', sans-serif;

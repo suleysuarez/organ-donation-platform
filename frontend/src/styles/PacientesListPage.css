@@ -2,10 +2,17 @@
 
 .list-container {
   min-height: 100vh;
-  background-color: #ffffff;
   padding: 40px 5%;
   box-sizing: border-box;
   font-family: 'Nunito Sans', sans-serif;
+  background-color: #f4fbfc;
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(0, 139, 155, 0.10) 0%, transparent 42%),
+    radial-gradient(circle at 88% 6%, rgba(12, 42, 70, 0.07) 0%, transparent 45%),
+    radial-gradient(circle at 95% 92%, rgba(193, 21, 116, 0.06) 0%, transparent 40%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cg fill='none' stroke='%23008b9b' stroke-width='1.4' opacity='0.07'%3E%3Cpath d='M14 6v10M9 11h10'/%3E%3Cpath d='M50 38v10M45 43h10'/%3E%3Ccircle cx='6' cy='50' r='3'/%3E%3Ccircle cx='58' cy='16' r='2.2'/%3E%3C/g%3E%3C/svg%3E");
+  background-attachment: fixed;
+  background-size: auto, auto, auto, 64px 64px;
 }
 
 /* Header */
@@ -70,6 +77,25 @@
   background-color: #007684;
 }
 
+/* Antes no existía: el botón "Limpiar" (Donantes y Pacientes lo usan) */
+.btn-clear {
+  height: 44px;
+  padding: 0 20px;
+  background-color: transparent;
+  color: #667085;
+  border: 1px solid #d0d5dd;
+  border-radius: 12px;
+  font-family: 'Nunito Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear:hover {
+  border-color: #008b9b;
+  color: #008b9b;
+}
+
 /* Estados */
 .list-loading,
 .list-empty,
@@ -91,8 +117,10 @@
   margin-bottom: 30px;
 }
 
-/* Card de Paciente */
+/* ── Card (Donante o Receptor) con gota decorativa ── */
 .paciente-card {
+  position: relative;
+  overflow: hidden;
   background-color: #ffffff;
   border-radius: 16px;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.06);
@@ -100,11 +128,28 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: box-shadow 0.2s;
+  transition: box-shadow 0.2s, transform 0.2s;
 }
 
 .paciente-card:hover {
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 10px 26px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Marca de agua: gota en la esquina inferior derecha (temática banco de sangre) */
+.paciente-card::after {
+  content: '';
+  position: absolute;
+  bottom: -18px;
+  right: -18px;
+  width: 110px;
+  height: 110px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath fill='%23008b9b' d='M50 4 C50 4 18 46 18 66 C18 85 32 97 50 97 C68 97 82 85 82 66 C82 46 50 4 50 4 Z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  opacity: 0.07;
+  pointer-events: none;
 }
 
 /* Header de la card */
@@ -118,7 +163,7 @@
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background-color: #0c2a46; /* Color distinto al médico para diferenciar */
+  background: linear-gradient(135deg, #0c2a46, #1a4a73); /* Color distinto al médico para diferenciar */
   color: white;
   font-size: 20px;
   font-weight: 700;
@@ -126,6 +171,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(12, 42, 70, 0.25);
 }
 
 .card-name {
@@ -135,10 +181,23 @@
   margin: 0;
 }
 
-.card-id {
+.card-id,
+.card-role {
   font-size: 12px;
   color: #667085;
   margin: 0;
+}
+
+.card-id-badge {
+  display: inline-block;
+  margin-top: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #008b9b;
+  background: #e6f6f8;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-family: 'Nunito Sans', sans-serif;
 }
 
 /* Body de la card */
@@ -158,18 +217,27 @@
 .field-label {
   color: #667085;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .field-value {
   color: #344054;
+  text-align: right;
+  word-break: break-all;
 }
 
-/* Botón detalle */
+
+.card-footer {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid #f2f4f7;
+  padding-top: 14px;
+}
+
 .card-actions {
   display: flex;
   justify-content: flex-end;
-  border-top: 1px solid #f2f4f7;
-  padding-top: 14px;
 }
 
 .btn-detail {
@@ -181,9 +249,38 @@
   font-size: 13px;
   cursor: pointer;
   padding: 0;
+  transition: color 0.2s;
 }
 
-/* Paginación */
+.btn-detail:hover {
+  color: #007684;
+  text-decoration: underline;
+}
+
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: 'Nunito Sans', sans-serif;
+}
+
+.badge-paciente {
+  background-color: #ffe4e8;
+  color: #c11574;
+}
+
+.badge-active {
+  background-color: #d1fadf;
+  color: #027a48;
+}
+
+.badge-inactive {
+  background-color: #f2f4f7;
+  color: #667085;
+}
+
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -199,6 +296,24 @@
   color: #344054;
   border: 1px solid #d0d5dd;
   border-radius: 10px;
+  font-family: 'Nunito Sans', sans-serif;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-page:hover:not(:disabled) {
+  border-color: #008b9b;
+  color: #008b9b;
+}
+
+.btn-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+
+.page-info {
+  font-size: 14px;
+  color: #667085;
 }

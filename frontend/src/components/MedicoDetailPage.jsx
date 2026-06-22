@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import PageModuleHeader from './PageModuleHeader'
 import profileImage from '../assets/Profile.png'
+import bgDetail from '../assets/Background-Detail.png'
 import '../styles/MedicoDetailPage.css'
 
 const API_URL = `${import.meta.env.VITE_API_BASE_URL}/api/medicos`
@@ -104,14 +105,22 @@ function MedicoDetailPage() {
   }
 
   if (loading) {
-    return <div className="detail-container"><p className="list-loading">Cargando médico...</p></div>
+    return (
+      <div className="detail-page-wrapper" style={{ backgroundImage: `url(${bgDetail})` }}>
+        <div className="detail-container">
+          <p className="list-loading">Cargando médico...</p>
+        </div>
+      </div>
+    )
   }
 
   if (serverError) {
     return (
-      <div className="detail-container">
-        <p className="list-error">{serverError}</p>
-        <button className="btn-back" onClick={() => navigate('/List/medicos')}>← Volver al listado</button>
+      <div className="detail-page-wrapper" style={{ backgroundImage: `url(${bgDetail})` }}>
+        <div className="detail-container">
+          <p className="list-error">{serverError}</p>
+          <button className="btn-back" onClick={() => navigate('/List/medicos')}>← Volver al listado</button>
+        </div>
       </div>
     )
   }
@@ -119,74 +128,76 @@ function MedicoDetailPage() {
   if (!medico) return null
 
   return (
-    <div className="detail-container">
-      <PageModuleHeader
-        image={profileImage}
-        title="Detalle del Medico"
-        subtitle="Consulta la informacion profesional y el certificado asociado"
-      />
-      <button className="btn-back" onClick={() => navigate('/List/medicos')}>← Volver al listado</button>
+    <div className="detail-page-wrapper" style={{ backgroundImage: `url(${bgDetail})` }}>
+      <div className="detail-container">
+        <PageModuleHeader
+          image={profileImage}
+          title="Detalle del Medico"
+          subtitle="Consulta la informacion profesional y el certificado asociado"
+        />
+        <button className="btn-back" onClick={() => navigate('/List/medicos')}>← Volver al listado</button>
 
-      <div className="detail-header-card">
-        <div className="detail-avatar">{medico.fullName.charAt(0).toUpperCase()}</div>
-        <div>
-          <h1 className="detail-name">{medico.fullName}</h1>
-          <p className="detail-profile">{medico.professionalProfile || 'Sin especialidad registrada'}</p>
-          <div className="detail-badges">
-            <span className={getStatusStyle(medico.verificationStatus)}>
-              {getStatusLabel(medico.verificationStatus)}
-            </span>
-            <span className={`badge ${medico.isActive ? 'badge-active' : 'badge-inactive'}`}>
-              {medico.isActive ? 'Activo' : 'Inactivo'}
-            </span>
+        <div className="detail-header-card">
+          <div className="detail-avatar">{medico.fullName.charAt(0).toUpperCase()}</div>
+          <div>
+            <h1 className="detail-name">{medico.fullName}</h1>
+            <p className="detail-profile">{medico.professionalProfile || 'Sin especialidad registrada'}</p>
+            <div className="detail-badges">
+              <span className={getStatusStyle(medico.verificationStatus)}>
+                {getStatusLabel(medico.verificationStatus)}
+              </span>
+              <span className={`badge ${medico.isActive ? 'badge-active' : 'badge-inactive'}`}>
+                {medico.isActive ? 'Activo' : 'Inactivo'}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="section-card">
-        <h2 className="section-title">Información General</h2>
-        <div className="detail-grid">
-          <div className="detail-field">
-            <span className="field-label">Correo</span>
-            <span className="field-value">{medico.email}</span>
-          </div>
-          <div className="detail-field">
-            <span className="field-label">Documento</span>
-            <span className="field-value">{medico.documentType} — {medico.documentNumber}</span>
-          </div>
-          <div className="detail-field">
-            <span className="field-label">Número RETHUS</span>
-            <span className="field-value">{medico.rethusRegistrationNumber || 'No registrado'}</span>
-          </div>
-          <div className="detail-field">
-            <span className="field-label">Fecha de registro</span>
-            <span className="field-value">
-              {medico.createdAt ? new Date(medico.createdAt).toLocaleDateString('es-CO') : '—'}
-            </span>
-          </div>
-          <div className="detail-field">
-            <span className="field-label">Fecha de verificación</span>
-            <span className="field-value">
-              {medico.verifiedAt ? new Date(medico.verifiedAt).toLocaleString('es-CO') : 'Pendiente'}
-            </span>
+        <div className="section-card">
+          <h2 className="section-title">Información General</h2>
+          <div className="detail-grid">
+            <div className="detail-field">
+              <span className="field-label">Correo</span>
+              <span className="field-value">{medico.email}</span>
+            </div>
+            <div className="detail-field">
+              <span className="field-label">Documento</span>
+              <span className="field-value">{medico.documentType} — {medico.documentNumber}</span>
+            </div>
+            <div className="detail-field">
+              <span className="field-label">Número RETHUS</span>
+              <span className="field-value">{medico.rethusRegistrationNumber || 'No registrado'}</span>
+            </div>
+            <div className="detail-field">
+              <span className="field-label">Fecha de registro</span>
+              <span className="field-value">
+                {medico.createdAt ? new Date(medico.createdAt).toLocaleDateString('es-CO') : '—'}
+              </span>
+            </div>
+            <div className="detail-field">
+              <span className="field-label">Fecha de verificación</span>
+              <span className="field-value">
+                {medico.verifiedAt ? new Date(medico.verifiedAt).toLocaleString('es-CO') : 'Pendiente'}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div className="section-card">
-        <h2 className="section-title">Certificado Profesional</h2>
-        <form onSubmit={handleSubirCertificado} className="upload-form">
-          <input
-            type="file"
-            accept=".pdf,.jpg,.jpeg,.png"
-            onChange={(e) => setArchivo(e.target.files[0] || null)}
-          />
-          {uploadError && <p className="error-server">{uploadError}</p>}
-          {uploadSuccess && <p className="success-message">{uploadSuccess}</p>}
-          <button className="btn-submit" type="submit" disabled={subiendo}>
-            {subiendo ? 'Subiendo...' : 'Subir Certificado'}
-          </button>
-        </form>
+        <div className="section-card">
+          <h2 className="section-title">Certificado Profesional</h2>
+          <form onSubmit={handleSubirCertificado} className="upload-form">
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={(e) => setArchivo(e.target.files[0] || null)}
+            />
+            {uploadError && <p className="error-server">{uploadError}</p>}
+            {uploadSuccess && <p className="success-message">{uploadSuccess}</p>}
+            <button className="btn-submit" type="submit" disabled={subiendo}>
+              {subiendo ? 'Subiendo...' : 'Subir Certificado'}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   )

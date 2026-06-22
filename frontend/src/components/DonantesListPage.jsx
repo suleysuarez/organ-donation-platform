@@ -109,6 +109,7 @@ function DonantesListPage() {
                   <div>
                     <h3 className="card-name">{donante.fullName}</h3>
                     <p className="card-role">Donante</p>
+                    <span className="card-id-badge">ID #{donante.id}</span>
                   </div>
                 </div>
 
